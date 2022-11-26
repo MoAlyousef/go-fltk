@@ -1,7 +1,8 @@
 package fltk
 
 /*
-#include "table.h"
+#include "include/cfltk/cfl_table.h"
+#include "include/cfltk/cfl_enums.h"
 */
 import "C"
 import (
@@ -14,71 +15,71 @@ type table struct {
 }
 
 func (t *table) SetRowCount(rowCount int) {
-	C.go_fltk_Table_set_row_count((*C.Fl_Table)(t.ptr()), C.int(rowCount))
+	C.Fl_Table_set_rows((*C.Fl_Table)(t.ptr()), C.int(rowCount))
 }
 func (t *table) SetRowHeight(row, height int) {
-	C.go_fltk_Table_set_row_height((*C.Fl_Table)(t.ptr()), C.int(row), C.int(height))
+	C.Fl_Table_set_row_height((*C.Fl_Table)(t.ptr()), C.int(row), C.int(height))
 }
 func (t *table) SetRowHeightAll(height int) {
-	C.go_fltk_Table_set_row_height_all((*C.Fl_Table)(t.ptr()), C.int(height))
+	C.Fl_Table_set_row_height_all((*C.Fl_Table)(t.ptr()), C.int(height))
 }
 func (t *table) EnableRowHeaders() {
-	C.go_fltk_Table_set_row_header((*C.Fl_Table)(t.ptr()), 1)
+	C.Fl_Table_set_row_header((*C.Fl_Table)(t.ptr()), 1)
 }
 func (t *table) DisableRowHeaders() {
-	C.go_fltk_Table_set_row_header((*C.Fl_Table)(t.ptr()), 0)
+	C.Fl_Table_set_row_header((*C.Fl_Table)(t.ptr()), 0)
 }
 func (t *table) AllowRowResizing() {
-	C.go_fltk_Table_set_row_resize((*C.Fl_Table)(t.ptr()), 1)
+	C.Fl_Table_set_row_resize((*C.Fl_Table)(t.ptr()), 1)
 }
 func (t *table) DisallowRowResizing() {
-	C.go_fltk_Table_set_row_resize((*C.Fl_Table)(t.ptr()), 0)
+	C.Fl_Table_set_row_resize((*C.Fl_Table)(t.ptr()), 0)
 }
 func (t *table) SetColumnCount(columnCount int) {
-	C.go_fltk_Table_set_column_count((*C.Fl_Table)(t.ptr()), C.int(columnCount))
+	C.Fl_Table_set_cols((*C.Fl_Table)(t.ptr()), C.int(columnCount))
 }
 func (t *table) SetColumnWidth(column, width int) {
-	C.go_fltk_Table_set_column_width((*C.Fl_Table)(t.ptr()), C.int(column), C.int(width))
+	C.Fl_Table_set_col_width((*C.Fl_Table)(t.ptr()), C.int(column), C.int(width))
 }
 func (t *table) SetColumnWidthAll(width int) {
-	C.go_fltk_Table_set_column_width_all((*C.Fl_Table)(t.ptr()), C.int(width))
+	C.Fl_Table_set_col_width_all((*C.Fl_Table)(t.ptr()), C.int(width))
 }
 func (t *table) EnableColumnHeaders() {
-	C.go_fltk_Table_set_column_header((*C.Fl_Table)(t.ptr()), 1)
+	C.Fl_Table_set_col_header((*C.Fl_Table)(t.ptr()), 1)
 }
 func (t *table) DisableColumnHeaders() {
-	C.go_fltk_Table_set_column_header((*C.Fl_Table)(t.ptr()), 0)
+	C.Fl_Table_set_col_header((*C.Fl_Table)(t.ptr()), 0)
 }
 func (t *table) AllowColumnResizing() {
-	C.go_fltk_Table_set_column_resize((*C.Fl_Table)(t.ptr()), 1)
+	C.Fl_Table_set_col_resize((*C.Fl_Table)(t.ptr()), 1)
 }
 func (t *table) DisallowColumnResizing() {
-	C.go_fltk_Table_set_column_resize((*C.Fl_Table)(t.ptr()), 0)
+	C.Fl_Table_set_col_resize((*C.Fl_Table)(t.ptr()), 0)
 }
 func (t *table) CallbackRow() int {
-	return int(C.go_fltk_Table_callback_row((*C.Fl_Table)(t.ptr())))
+	return int(C.Fl_Table_callback_row((*C.Fl_Table)(t.ptr())))
 }
 func (t *table) CallbackContext() TableContext {
-	return TableContext(C.go_fltk_Table_callback_context((*C.Fl_Table)(t.ptr())))
+	return TableContext(C.Fl_Table_callback_context((*C.Fl_Table)(t.ptr())))
 }
 func (t *table) Selection() (int, int, int, int) {
 	var top, left, bottom, right C.int
-	C.go_fltk_Table_get_selection((*C.Fl_Table)(t.ptr()), &top, &left, &bottom, &right)
+	C.Fl_Table_get_selection((*C.Fl_Table)(t.ptr()), &top, &left, &bottom, &right)
 	return int(top), int(left), int(bottom), int(right)
 }
 func (t *table) VisibleCells() (int, int, int, int) {
 	var top, bottom, left, right C.int
-	C.go_fltk_Table_visible_cells((*C.Fl_Table)(t.ptr()), &top, &bottom, &left, &right)
+	C.Fl_Table_visible_cells((*C.Fl_Table)(t.ptr()), &top, &bottom, &left, &right)
 	return int(top), int(left), int(bottom), int(right)
 }
 func (t *table) SetTopRow(row int) {
-	C.go_fltk_Table_set_top_row((*C.Fl_Table)(t.ptr()), C.int(row))
+	C.Fl_Table_set_top_row((*C.Fl_Table)(t.ptr()), C.int(row))
 }
 func (t *table) ScrollbarSize() int {
-	return int(C.go_fltk_Table_scrollbar_size((*C.Fl_Table)(t.ptr())))
+	return int(C.Fl_Table_scrollbar_size((*C.Fl_Table)(t.ptr())))
 }
 func (t *table) SetScrollbarSize(size int) {
-	C.go_fltk_Table_set_scrollbar_size((*C.Fl_Table)(t.ptr()), C.int(size))
+	C.Fl_Table_set_scrollbar_size((*C.Fl_Table)(t.ptr()), C.int(size))
 }
 
 type TableRow struct {
@@ -130,19 +131,19 @@ var globalTableCallbackMap = newTableCallbackMap()
 type TableContext int
 
 var (
-	ContextNone      = TableContext(C.go_FL_CONTEXT_NONE)
-	ContextStartPage = TableContext(C.go_FL_CONTEXT_STARTPAGE)
-	ContextEndPage   = TableContext(C.go_FL_CONTEXT_ENDPAGE)
-	ContextRowHeader = TableContext(C.go_FL_CONTEXT_ROW_HEADER)
-	ContextColHeader = TableContext(C.go_FL_CONTEXT_COL_HEADER)
-	ContextCell      = TableContext(C.go_FL_CONTEXT_CELL)
-	ContextTable     = TableContext(C.go_FL_CONTEXT_TABLE)
-	ContextRCResize  = TableContext(C.go_FL_CONTEXT_RC_RESIZE)
+	ContextNone      = TableContext(C.Fl_TableContext_None)
+	ContextStartPage = TableContext(C.Fl_TableContext_StartPage)
+	ContextEndPage   = TableContext(C.Fl_TableContext_EndPage)
+	ContextRowHeader = TableContext(C.Fl_TableContext_RowHeader)
+	ContextColHeader = TableContext(C.Fl_TableContext_ColHeader)
+	ContextCell      = TableContext(C.Fl_TableContext_Cell)
+	ContextTable     = TableContext(C.Fl_TableContext_Table)
+	ContextRCResize  = TableContext(C.Fl_TableContext_RcResize)
 )
 
-func NewTableRow(x, y, w, h int) *TableRow {
+func NewTableRow(x, y, w, h int, text ...string) *TableRow {
 	t := &TableRow{}
-	initGroup(t, unsafe.Pointer(C.go_fltk_new_TableRow(C.int(x), C.int(y), C.int(w), C.int(h))))
+	initGroup(t, unsafe.Pointer(C.Fl_Table_Row_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	t.deletionHandlerId = t.addDeletionHandler(t.onDelete)
 	return t
 }
@@ -165,33 +166,33 @@ func (t *TableRow) Destroy() {
 	t.table.Destroy()
 }
 func (t *TableRow) IsRowSelected(row int) bool {
-	return C.go_fltk_TableRow_row_selected((*C.GTableRow)(t.ptr()), C.int(row)) != 0
+	return C.Fl_Table_Row_row_selected((*C.Fl_Table_Row)(t.ptr()), C.int(row)) != 0
 }
 func (t *TableRow) SetDrawCellCallback(callback func(TableContext, int, int, int, int, int, int)) {
 	if t.drawCellCallbackId > 0 {
 		globalTableCallbackMap.unregister(t.drawCellCallbackId)
 	}
 	t.drawCellCallbackId = globalTableCallbackMap.register(callback)
-	C.go_fltk_TableRow_set_draw_cell_callback((*C.GTableRow)(t.ptr()), C.int(t.drawCellCallbackId))
+	// C.Fl_Table_Row_set_draw_cell_data((*C.Fl_Table_Row)(t.ptr()), C.int(t.drawCellCallbackId))
 }
 
 type SelectionFlag int
 
 var (
-	Deselect        = SelectionFlag(C.go_FL_DESELECT)
-	Select          = SelectionFlag(C.go_FL_SELECT)
-	ToggleSelection = SelectionFlag(C.go_FL_TOGGLE_SELECTION)
+	Deselect        = SelectionFlag(C.Fl_TreeItemSelect_Deselect)
+	Select          = SelectionFlag(C.Fl_TreeItemSelect_Select)
+	ToggleSelection = SelectionFlag(C.Fl_TreeItemSelect_Toggle)
 )
 
 func (t *TableRow) SelectAllRows(flag SelectionFlag) {
-	C.go_fltk_TableRow_select_all_rows((*C.GTableRow)(t.ptr()), C.int(flag))
+	C.Fl_Table_Row_select_all_rows((*C.Fl_Table_Row)(t.ptr()), C.int(flag))
 }
 func (t *TableRow) SelectRow(row int, flag SelectionFlag) {
-	C.go_fltk_TableRow_select_row((*C.GTableRow)(t.ptr()), C.int(row), C.int(flag))
+	C.Fl_Table_Row_select_row((*C.Fl_Table_Row)(t.ptr()), C.int(row), C.int(flag))
 }
 func (t *TableRow) FindCell(ctx TableContext, row int, col int) (int, int, int, int, error) {
 	var x, y, w, h C.int
-	ret := C.go_fltk_TableRow_find_cell((*C.GTableRow)(t.ptr()), C.int(ctx), C.int(row), C.int(col), &x, &y, &w, &h)
+	ret := C.Fl_Table_Row_find_cell((*C.Fl_Table_Row)(t.ptr()), C.int(ctx), C.int(row), C.int(col), &x, &y, &w, &h)
 	err := errors.New("no cell was found")
 	if ret == 0 {
 		err = nil
@@ -202,13 +203,13 @@ func (t *TableRow) FindCell(ctx TableContext, row int, col int) (int, int, int, 
 type RowSelectMode int
 
 var (
-	SelectNone   = RowSelectMode(C.go_FL_SELECT_NONE)
-	SelectSingle = RowSelectMode(C.go_FL_SELECT_SINGLE)
-	SelectMulti  = RowSelectMode(C.go_FL_SELECT_MULTI)
+	SelectNone   = RowSelectMode(C.Fl_TableRowSelectMode_None)
+	SelectSingle = RowSelectMode(C.Fl_TableRowSelectMode_Single)
+	SelectMulti  = RowSelectMode(C.Fl_TableRowSelectMode_Multi)
 )
 
 func (t *TableRow) SetType(tableType RowSelectMode) {
-	C.go_fltk_TableRow_set_type((*C.GTableRow)(t.ptr()), C.int(tableType))
+	C.Fl_Table_Row_set_type((*C.Fl_Table_Row)(t.ptr()), C.int(tableType))
 }
 
 //export _go_drawTableHandler

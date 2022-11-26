@@ -1,7 +1,7 @@
 package fltk
 
 /*
-#include "group.h"
+#include "include/cfltk/cfl_group.h"
 */
 import "C"
 import (
@@ -32,7 +32,7 @@ func initGroup(g groupInterface, p unsafe.Pointer) {
 
 func NewGroup(x, y, w, h int, text ...string) *Group {
 	g := &Group{}
-	initGroup(g, unsafe.Pointer(C.go_fltk_new_Group(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initGroup(g, unsafe.Pointer(C.Fl_Group_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return g
 }
 
@@ -40,11 +40,11 @@ func (g *Group) getGroup() *Group {
 	return g
 }
 func (g *Group) Begin() {
-	C.go_fltk_Group_begin((*C.GGroup)(g.ptr()))
+	C.Fl_Group_begin((*C.Fl_Group)(g.ptr()))
 	currentGroup = g
 }
 func (g *Group) End() {
-	C.go_fltk_Group_end((*C.GGroup)(g.ptr()))
+	C.Fl_Group_end((*C.Fl_Group)(g.ptr()))
 	currentGroup = g.parent
 }
 
@@ -64,7 +64,7 @@ func (g *Group) removeChild(child Widget) {
 }
 
 func (g *Group) Add(w Widget) {
-	C.go_fltk_Group_add((*C.GGroup)(g.ptr()), w.getWidget().ptr())
+	C.Fl_Group_add((*C.Fl_Group)(g.ptr()), unsafe.Pointer(w.getWidget().ptr()))
 	if ww := w.getWidget(); ww.parent != nil {
 		ww.parent.getGroup().removeChild(w)
 	}
@@ -72,16 +72,16 @@ func (g *Group) Add(w Widget) {
 	g.children = append(g.children, w)
 }
 func (g *Group) Remove(w Widget) {
-	C.go_fltk_Group_remove((*C.GGroup)(g.ptr()), w.getWidget().ptr())
+	C.Fl_Group_remove((*C.Fl_Group)(g.ptr()), unsafe.Pointer(w.getWidget().ptr()))
 	g.removeChild(w)
 	w.getWidget().parent = toplevelGroup
 }
 
 func (g *Group) Resizable(w Widget) {
-	C.go_fltk_Group_resizable((*C.GGroup)(g.ptr()), w.getWidget().ptr())
+	C.Fl_Group_resizable((*C.Fl_Group)(g.ptr()), unsafe.Pointer(w.getWidget().ptr()))
 }
 func (g *Group) DrawChildren() {
-	C.go_fltk_Group_draw_children((*C.GGroup)(g.ptr()))
+	C.Fl_Group_draw_children((*C.Fl_Group)(g.ptr()))
 }
 
 func (g *Group) onDelete() {

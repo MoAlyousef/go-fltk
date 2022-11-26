@@ -2,7 +2,8 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "menu.h"
+#include "include/cfltk/cfl_menu.h"
+#include "include/cfltk/cfl_enums.h"
 */
 import "C"
 import "unsafe"
@@ -41,24 +42,26 @@ func (m *menu) Add(label string, callback func()) int {
 	m.itemCallbacks = append(m.itemCallbacks, callbackId)
 	labelStr := C.CString(label)
 	defer C.free(unsafe.Pointer(labelStr))
-	return int(C.go_fltk_Menu_add((*C.Fl_Menu_)(m.ptr()), labelStr, 0, C.int(callbackId), 0))
+	// return int(C.Fl_Menu_Bar_add((*C.Fl_Menu_Bar)(m.ptr()), labelStr, 0, C.int(callbackId), 0))
+	return 0
 }
 func (m *menu) AddEx(label string, shortcut int, callback func(), flags int) int {
 	callbackId := globalCallbackMap.register(callback)
 	m.itemCallbacks = append(m.itemCallbacks, callbackId)
 	labelStr := C.CString(label)
 	defer C.free(unsafe.Pointer(labelStr))
-	return int(C.go_fltk_Menu_add((*C.Fl_Menu_)(m.ptr()), labelStr, C.int(shortcut), C.int(callbackId), C.int(flags)))
+	// return int(C.Fl_Menu_Bar_add((*C.Fl_Menu_Bar)(m.ptr()), labelStr, C.int(shortcut), C.int(callbackId), C.int(flags)))
+	return 0
 }
 
 func (m *menu) SetValue(value int) {
-	C.go_fltk_Menu_set_value((*C.Fl_Menu_)(m.ptr()), C.int(value))
+	C.Fl_Menu_Bar_set_value((*C.Fl_Menu_Bar)(m.ptr()), C.int(value))
 }
 func (m *menu) Value() int {
-	return int(C.go_fltk_Menu_value((*C.Fl_Menu_)(m.ptr())))
+	return int(C.Fl_Menu_Bar_value((*C.Fl_Menu_Bar)(m.ptr())))
 }
 func (m *menu) Size() int {
-	return int(C.go_fltk_Menu_size((*C.Fl_Menu_)(m.ptr())))
+	return int(C.Fl_Menu_Bar_size((*C.Fl_Menu_Bar)(m.ptr())))
 }
 
 type MenuButton struct {
@@ -67,7 +70,7 @@ type MenuButton struct {
 
 func NewMenuButton(x, y, w, h int, text ...string) *MenuButton {
 	m := &MenuButton{}
-	initWidget(m, unsafe.Pointer(C.go_fltk_new_MenuButton(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initWidget(m, unsafe.Pointer(C.Fl_Menu_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	m.menu.init()
 	return m
 }
@@ -75,30 +78,30 @@ func NewMenuButton(x, y, w, h int, text ...string) *MenuButton {
 type MenuType int
 
 var (
-	POPUP1   = MenuType(C.go_FL_POPUP1)
-	POPUP2   = MenuType(C.go_FL_POPUP2)
-	POPUP12  = MenuType(C.go_FL_POPUP12)
-	POPUP3   = MenuType(C.go_FL_POPUP3)
-	POPUP13  = MenuType(C.go_FL_POPUP13)
-	POPUP23  = MenuType(C.go_FL_POPUP23)
-	POPUP123 = MenuType(C.go_FL_POPUP123)
+	POPUP1   = MenuType(C.Popup1)
+	POPUP2   = MenuType(C.Popup2)
+	POPUP12  = MenuType(C.Popup12)
+	POPUP3   = MenuType(C.Popup3)
+	POPUP13  = MenuType(C.Popup13)
+	POPUP23  = MenuType(C.Popup23)
+	POPUP123 = MenuType(C.Popup123)
 )
 
 var (
-	MENU_INACTIVE  = int(C.go_FL_MENU_INACTIVE)
-	MENU_TOGGLE    = int(C.go_FL_MENU_TOGGLE)
-	MENU_VALUE     = int(C.go_FL_MENU_VALUE)
-	MENU_RADIO     = int(C.go_FL_MENU_RADIO)
-	MENU_INVISIBLE = int(C.go_FL_MENU_INVISIBLE)
-	SUBMENU        = int(C.go_FL_SUBMENU)
-	MENU_DIVIDER   = int(C.go_FL_MENU_DIVIDER)
+	MENU_INACTIVE  = int(C.Fl_MenuFlag_Inactive)
+	MENU_TOGGLE    = int(C.Fl_MenuFlag_Toggle)
+	MENU_VALUE     = int(C.Fl_MenuFlag_Value)
+	MENU_RADIO     = int(C.Fl_MenuFlag_Radio)
+	MENU_INVISIBLE = int(C.Fl_MenuFlag_Invisible)
+	SUBMENU        = int(C.Fl_MenuFlag_Submenu)
+	MENU_DIVIDER   = int(C.Fl_MenuFlag_MenuDivider)
 )
 
 func (m *MenuButton) SetType(menuType MenuType) {
-	C.go_fltk_MenuButton_set_type((*C.GMenu_Button)(m.ptr()), C.int(menuType))
+	C.Fl_Menu_Button_set_type((*C.Fl_Menu_Button)(m.ptr()), C.int(menuType))
 }
 func (m *MenuButton) Popup() {
-	C.go_fltk_MenuButton_popup((*C.GMenu_Button)(m.ptr()))
+	C.Fl_Menu_Button_popup((*C.Fl_Menu_Button)(m.ptr()))
 }
 func (m *MenuButton) Destroy() {
 	m.menu.Destroy()
@@ -110,7 +113,7 @@ type MenuBar struct {
 
 func NewMenuBar(x, y, w, h int, text ...string) *MenuBar {
 	m := &MenuBar{}
-	initWidget(m, unsafe.Pointer(C.go_fltk_new_MenuBar(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initWidget(m, unsafe.Pointer(C.Fl_Menu_Bar_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	m.menu.init()
 	return m
 }

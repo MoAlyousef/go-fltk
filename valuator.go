@@ -1,7 +1,7 @@
 package fltk
 
 /*
-#include "valuator.h"
+#include "include/cfltk/cfl_valuator.h"
 */
 import "C"
 
@@ -10,21 +10,21 @@ type valuator struct {
 }
 
 func (v *valuator) SetMinimum(value float64) {
-	C.go_fltk_Valuator_set_minimum((*C.Fl_Valuator)(v.ptr()), C.double(value))
+	C.Fl_Slider_set_minimum((*C.Fl_Slider)(v.ptr()), C.double(value))
 }
 
 func (v *valuator) SetMaximum(value float64) {
-	C.go_fltk_Valuator_set_maximum((*C.Fl_Valuator)(v.ptr()), C.double(value))
+	C.Fl_Slider_set_maximum((*C.Fl_Slider)(v.ptr()), C.double(value))
 }
 
 func (v *valuator) SetStep(value float64) {
-	C.go_fltk_Valuator_set_step((*C.Fl_Valuator)(v.ptr()), C.double(value))
+	C.Fl_Slider_set_step((*C.Fl_Slider)(v.ptr()), C.double(value), C.int(1))
 }
 
 func (v *valuator) Value() float64 {
-	return float64(C.go_fltk_Valuator_value((*C.Fl_Valuator)(v.ptr())))
+	return float64(C.Fl_Slider_value((*C.Fl_Slider)(v.ptr())))
 }
 
 func (v *valuator) SetValue(value float64) {
-	C.go_fltk_Valuator_set_value((*C.Fl_Valuator)(v.ptr()), C.double(value))
+	C.Fl_Slider_set_value((*C.Fl_Slider)(v.ptr()), C.double(value))
 }

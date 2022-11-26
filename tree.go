@@ -2,7 +2,8 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "tree.h"
+#include "include/cfltk/cfl_tree.h"
+#include "include/cfltk/cfl_enums.h"
 */
 import "C"
 import "unsafe"
@@ -13,15 +14,15 @@ type Tree struct {
 
 func NewTree(x, y, w, h int, text ...string) *Tree {
 	t := &Tree{}
-	initGroup(t, unsafe.Pointer(C.go_fltk_new_Tree(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initGroup(t, unsafe.Pointer(C.Fl_Tree_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return t
 }
 
 func (t *Tree) SetShowRoot(show bool) {
 	if show {
-		C.go_fltk_Tree_set_show_root((*C.GTree)(t.ptr()), 1)
+		C.Fl_Tree_set_showroot((*C.Fl_Tree)(t.ptr()), 1)
 	} else {
-		C.go_fltk_Tree_set_show_root((*C.GTree)(t.ptr()), 0)
+		C.Fl_Tree_set_showroot((*C.Fl_Tree)(t.ptr()), 0)
 	}
 }
 
@@ -32,29 +33,33 @@ type TreeItem struct {
 func (t *Tree) Add(path string) TreeItem {
 	pathStr := C.CString(path)
 	defer C.free(unsafe.Pointer(pathStr))
-	itemPtr := C.go_fltk_Tree_add((*C.GTree)(t.ptr()), pathStr)
+	itemPtr := C.Fl_Tree_add((*C.Fl_Tree)(t.ptr()), pathStr)
 	return TreeItem{ptr: itemPtr}
 }
 func (t TreeItem) SetWidget(w Widget) {
-	C.go_fltk_Tree_Item_set_widget(t.ptr, w.getWidget().ptr())
+	C.Fl_Tree_Item_set_widget(t.ptr, w.getWidget().ptr())
 }
 
 type TreeItemDrawMode uint
+
 var (
-	TreeItemDrawDefault = TreeItemDrawMode(C.go_FL_TREE_ITEM_DRAW_DEFAULT)
-	TreeItemDrawLabelAndWidget = TreeItemDrawMode(C.go_FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET)
-	TreeItemHeightFromWidget = TreeItemDrawMode(C.go_FL_TREE_ITEM_HEIGHT_FROM_WIDGET)
+	TreeItemDrawDefault        = TreeItemDrawMode(C.Fl_TreeItemDrawMode_Default)
+	TreeItemDrawLabelAndWidget = TreeItemDrawMode(C.Fl_TreeItemDrawMode_LabelAndWidget)
+	TreeItemHeightFromWidget   = TreeItemDrawMode(C.Fl_TreeItemDrawMode_HeightFromWidget)
 )
+
 func (t *Tree) SetItemDrawMode(drawMode TreeItemDrawMode) {
-	C.go_fltk_Tree_set_item_draw_mode((*C.GTree)(t.ptr()), C.uint(drawMode))
+	C.Fl_Tree_set_item_draw_mode((*C.Fl_Tree)(t.ptr()), C.int(drawMode))
 }
 
 type TreeConnector int
+
 var (
-	TreeConnectorNone = TreeConnector(C.go_FL_TREE_CONNECTOR_NONE)
-	TreeConnectorDotted = TreeConnector(C.go_FL_TREE_CONNECTOR_DOTTED)
-	TreeConnectorSolid = TreeConnector(C.go_FL_TREE_CONNECTOR_SOLID)
+	TreeConnectorNone   = TreeConnector(C.Fl_TreeConnectorStyle_None)
+	TreeConnectorDotted = TreeConnector(C.Fl_TreeConnectorStyle_Dotted)
+	TreeConnectorSolid  = TreeConnector(C.Fl_TreeConnectorStyle_Solid)
 )
+
 func (t *Tree) SetConnectorStyle(style TreeConnector) {
-	C.go_fltk_Tree_set_connector_style((*C.GTree)(t.ptr()), C.int(style))
+	C.Fl_Tree_set_connectorstyle((*C.Fl_Tree)(t.ptr()), C.int(style))
 }

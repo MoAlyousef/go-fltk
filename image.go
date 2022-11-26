@@ -2,7 +2,7 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "image.h"
+#include "include/cfltk/cfl_image.h"
 */
 import "C"
 import (
@@ -34,22 +34,22 @@ func initImage(i Image, p unsafe.Pointer) {
 }
 
 func (i *image) Destroy() {
-	C.go_fltk_image_delete(i.ptr())
+	C.Fl_Image_delete(i.ptr())
 	i.iPtr = nil
 }
 
 func (i *image) Draw(x, y, w, h int) {
-	C.go_fltk_image_draw(i.ptr(), C.int(x), C.int(y), C.int(w), C.int(h))
+	C.Fl_Image_draw(i.ptr(), C.int(x), C.int(y), C.int(w), C.int(h))
 }
 
 func (i *image) W() int {
-	return int(C.go_fltk_image_w(i.ptr()))
+	return int(C.Fl_Image_width(i.ptr()))
 }
 func (i *image) H() int {
-	return int(C.go_fltk_image_h(i.ptr()))
+	return int(C.Fl_Image_height(i.ptr()))
 }
 func (i *image) Count() int {
-	return int(C.go_fltk_image_count(i.ptr()))
+	return int(C.Fl_Image_count(i.ptr()))
 }
 func (i *image) Scale(width int, height int, proportional bool, can_expand bool) {
 	prop := 0
@@ -60,25 +60,25 @@ func (i *image) Scale(width int, height int, proportional bool, can_expand bool)
 	if can_expand {
 		expand = 1
 	}
-	C.go_fltk_image_scale(i.ptr(), C.int(width), C.int(height), C.int(prop), C.int(expand))
+	C.Fl_Image_scale(i.ptr(), C.int(width), C.int(height), C.int(prop), C.int(expand))
 }
 func (i *image) fail() int {
-	return int(C.go_fltk_image_fail(i.ptr()))
+	return int(C.Fl_Image_fail(i.ptr()))
 }
 func (i *image) DataW() int {
-	return int(C.go_fltk_image_data_w(i.ptr()))
+	return int(C.Fl_Image_data_w(i.ptr()))
 }
 func (i *image) DataH() int {
-	return int(C.go_fltk_image_data_h(i.ptr()))
+	return int(C.Fl_Image_data_h(i.ptr()))
 }
 func (i *image) D() int {
-	return int(C.go_fltk_image_d(i.ptr()))
+	return int(C.Fl_Image_d(i.ptr()))
 }
 func (i *image) Ld() int {
-	return int(C.go_fltk_image_ld(i.ptr()))
+	return int(C.Fl_Image_ld(i.ptr()))
 }
 func (i *image) Inactive() {
-	C.go_fltk_image_inactive(i.ptr())
+	C.Fl_Image_inactive(i.ptr())
 }
 
 func image_error(val int) error {
@@ -101,7 +101,7 @@ func NewSvgImageLoad(path string) (*SvgImage, error) {
 	fileStr := C.CString(path)
 	defer C.free(unsafe.Pointer(fileStr))
 	img := &SvgImage{}
-	initImage(img, unsafe.Pointer(C.go_fltk_svg_image_load(fileStr)))
+	initImage(img, unsafe.Pointer(C.Fl_SVG_Image_new(fileStr)))
 	return img, image_error(img.fail())
 }
 
@@ -109,7 +109,7 @@ func NewSvgImageFromString(str string) (*SvgImage, error) {
 	imagestr := C.CString(str)
 	defer C.free(unsafe.Pointer(imagestr))
 	img := &SvgImage{}
-	initImage(img, unsafe.Pointer(C.go_fltk_svg_image_data(imagestr)))
+	initImage(img, unsafe.Pointer(C.Fl_SVG_Image_from(imagestr)))
 	return img, image_error(img.fail())
 }
 
@@ -121,7 +121,7 @@ func NewPngImageLoad(path string) (*PngImage, error) {
 	fileStr := C.CString(path)
 	defer C.free(unsafe.Pointer(fileStr))
 	img := &PngImage{}
-	initImage(img, unsafe.Pointer(C.go_fltk_png_image_load(fileStr)))
+	initImage(img, unsafe.Pointer(C.Fl_PNG_Image_new(fileStr)))
 	return img, image_error(img.fail())
 }
 
@@ -130,7 +130,7 @@ func NewPngImageFromData(data []uint8) (*PngImage, error) {
 
 	img := &PngImage{}
 
-	initImage(img, unsafe.Pointer(C.go_fltk_png_image_data(buf, C.int(len(data)))))
+	initImage(img, unsafe.Pointer(C.Fl_PNG_Image_from(buf, C.int(len(data)))))
 	return img, image_error(img.fail())
 }
 
@@ -142,7 +142,7 @@ func NewJpegImageLoad(path string) (*JpegImage, error) {
 	fileStr := C.CString(path)
 	defer C.free(unsafe.Pointer(fileStr))
 	img := &JpegImage{}
-	initImage(img, unsafe.Pointer(C.go_fltk_jpg_image_load(fileStr)))
+	initImage(img, unsafe.Pointer(C.Fl_JPEG_Image_new(fileStr)))
 	return img, image_error(img.fail())
 }
 
@@ -151,7 +151,7 @@ func NewJpegImageFromData(data []uint8) (*JpegImage, error) {
 
 	img := &JpegImage{}
 
-	initImage(img, unsafe.Pointer(C.go_fltk_jpg_image_data(buf)))
+	initImage(img, unsafe.Pointer(C.Fl_JPEG_Image_from(buf)))
 	return img, image_error(img.fail())
 }
 
@@ -163,7 +163,7 @@ func NewBmpImageLoad(path string) (*BmpImage, error) {
 	fileStr := C.CString(path)
 	defer C.free(unsafe.Pointer(fileStr))
 	img := &BmpImage{}
-	initImage(img, unsafe.Pointer(C.go_fltk_bmp_image_load(fileStr)))
+	initImage(img, unsafe.Pointer(C.Fl_BMP_Image_new(fileStr)))
 	return img, image_error(img.fail())
 }
 
@@ -172,7 +172,7 @@ func NewBmpImageFromData(data []uint8) (*BmpImage, error) {
 
 	img := &BmpImage{}
 
-	initImage(img, unsafe.Pointer(C.go_fltk_bmp_image_data(buf, C.long(len(data)))))
+	initImage(img, unsafe.Pointer(C.Fl_BMP_Image_from(buf, C.long(len(data)))))
 	return img, image_error(img.fail())
 }
 
@@ -187,7 +187,7 @@ func NewRgbImage(data []uint8, w, h, depth int) (*RgbImage, error) {
 
 	buf := (*C.uchar)(unsafe.Pointer(&img.data[0]))
 
-	initImage(img, unsafe.Pointer(C.go_fltk_rgb_image_data(buf, C.int(w), C.int(h), C.int(depth), C.int(0))))
+	initImage(img, unsafe.Pointer(C.Fl_RGB_Image_new(buf, C.int(w), C.int(h), C.int(depth), C.int(0))))
 	return img, image_error(img.fail())
 }
 
@@ -217,7 +217,7 @@ func NewRgbImageFromImage(image goimage.Image) (*RgbImage, error) {
 		}
 	}
 	buf := (*C.uchar)(unsafe.Pointer(&rgbImage.data[0]))
-	initImage(rgbImage, unsafe.Pointer(C.go_fltk_rgb_image_data(buf, C.int(w), C.int(h), C.int(depth), C.int(stride))))
+	initImage(rgbImage, unsafe.Pointer(C.Fl_RGB_Image_from_data(buf, C.int(w), C.int(h), C.int(depth), C.int(stride))))
 	return rgbImage, image_error(rgbImage.fail())
 }
 
@@ -228,7 +228,7 @@ type SharedImage struct {
 var shared_init bool
 
 func register_images() {
-	C.go_fltk_register_images()
+	C.Fl_register_images()
 }
 
 func NewSharedImageLoad(path string) (*SharedImage, error) {
@@ -239,7 +239,7 @@ func NewSharedImageLoad(path string) (*SharedImage, error) {
 	fileStr := C.CString(path)
 	defer C.free(unsafe.Pointer(fileStr))
 	img := &SharedImage{}
-	initImage(img, unsafe.Pointer(C.go_fltk_shared_image_load(fileStr)))
+	initImage(img, unsafe.Pointer(C.Fl_Shared_Image_get(fileStr, C.int(0), C.int(0))))
 	if img.iPtr == nil {
 		return nil, errors.New("Shared Image initialization error")
 	}

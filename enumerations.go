@@ -1,37 +1,37 @@
 package fltk
 
 /*
-#include "enumerations.h"
+#include "include/cfltk/cfl_enums.h"
 */
 import "C"
 
 type Align uint
 
 var (
-	ALIGN_CENTER             = Align(C.go_FL_ALIGN_CENTER)
-	ALIGN_TOP                = Align(C.go_FL_ALIGN_TOP)
-	ALIGN_BOTTOM             = Align(C.go_FL_ALIGN_BOTTOM)
-	ALIGN_LEFT               = Align(C.go_FL_ALIGN_LEFT)
-	ALIGN_RIGHT              = Align(C.go_FL_ALIGN_RIGHT)
-	ALIGN_INSIDE             = Align(C.go_FL_ALIGN_INSIDE)
-	ALIGN_TEXT_OVER_IMAGE    = Align(C.go_FL_ALIGN_TEXT_OVER_IMAGE)
-	ALIGN_IMAGE_OVER_TEXT    = Align(C.go_FL_ALIGN_IMAGE_OVER_TEXT)
-	ALIGN_CLIP               = Align(C.go_FL_ALIGN_CLIP)
-	ALIGN_WRAP               = Align(C.go_FL_ALIGN_WRAP)
-	ALIGN_IMAGE_NEXT_TO_TEXT = Align(C.go_FL_ALIGN_IMAGE_NEXT_TO_TEXT)
-	ALIGN_TEXT_NEXT_TO_IMAGE = Align(C.go_FL_ALIGN_TEXT_NEXT_TO_IMAGE)
-	ALIGN_IMAGE_BACKDROP     = Align(C.go_FL_ALIGN_IMAGE_BACKDROP)
-	ALIGN_TOP_LEFT           = Align(C.go_FL_ALIGN_TOP_LEFT)
-	ALIGN_TOP_RIGHT          = Align(C.go_FL_ALIGN_TOP_RIGHT)
-	ALIGN_BOTTOM_LEFT        = Align(C.go_FL_ALIGN_BOTTOM_LEFT)
-	ALIGN_BOTTOM_RIGHT       = Align(C.go_FL_ALIGN_BOTTOM_RIGHT)
-	ALIGN_LEFT_TOP           = Align(C.go_FL_ALIGN_LEFT_TOP)
-	ALIGN_RIGHT_TOP          = Align(C.go_FL_ALIGN_RIGHT_TOP)
-	ALIGN_LEFT_BOTTOM        = Align(C.go_FL_ALIGN_LEFT_BOTTOM)
-	ALIGN_RIGHT_BOTTOM       = Align(C.go_FL_ALIGN_RIGHT_BOTTOM)
-	ALIGN_NOWRAP             = Align(C.go_FL_ALIGN_NOWRAP)
-	ALIGN_POSITION_MASK      = Align(C.go_FL_ALIGN_POSITION_MASK)
-	ALIGN_IMAGE_MASK         = Align(C.go_FL_ALIGN_IMAGE_MASK)
+	ALIGN_CENTER             = Align(C.Fl_Align_Center)
+	ALIGN_TOP                = Align(C.Fl_Align_Top)
+	ALIGN_BOTTOM             = Align(C.Fl_Align_Bottom)
+	ALIGN_LEFT               = Align(C.Fl_Align_Left)
+	ALIGN_RIGHT              = Align(C.Fl_Align_Right)
+	ALIGN_INSIDE             = Align(C.Fl_Align_Inside)
+	ALIGN_TEXT_OVER_IMAGE    = Align(C.Fl_Align_TextOverImage)
+	ALIGN_IMAGE_OVER_TEXT    = Align(C.Fl_Align_ImageOverText)
+	ALIGN_CLIP               = Align(C.Fl_Align_Clip)
+	ALIGN_WRAP               = Align(C.Fl_Align_Wrap)
+	ALIGN_IMAGE_NEXT_TO_TEXT = Align(C.Fl_Align_ImageNextToText)
+	ALIGN_TEXT_NEXT_TO_IMAGE = Align(C.Fl_Align_TextNextToImage)
+	ALIGN_IMAGE_BACKDROP     = Align(C.Fl_Align_ImageBackdrop)
+	ALIGN_TOP_LEFT           = Align(C.Fl_Align_TopLeft)
+	ALIGN_TOP_RIGHT          = Align(C.Fl_Align_TopRight)
+	ALIGN_BOTTOM_LEFT        = Align(C.Fl_Align_BottomLeft)
+	ALIGN_BOTTOM_RIGHT       = Align(C.Fl_Align_BottomRight)
+	ALIGN_LEFT_TOP           = Align(C.Fl_Align_LeftTop)
+	ALIGN_RIGHT_TOP          = Align(C.Fl_Align_RightTop)
+	ALIGN_LEFT_BOTTOM        = Align(C.Fl_Align_LeftBottom)
+	ALIGN_RIGHT_BOTTOM       = Align(C.Fl_Align_RightBottom)
+	ALIGN_NOWRAP             = Align(C.Fl_Align_NoWrap)
+	ALIGN_POSITION_MASK      = Align(C.Fl_Align_PositionMask)
+	ALIGN_IMAGE_MASK         = Align(C.Fl_Align_ImageMask)
 )
 
 type BoxType int
@@ -99,33 +99,29 @@ const (
 type Font int
 
 var (
-	HELVETICA             = Font(C.go_FL_HELVETICA)
-	HELVETICA_BOLD        = Font(C.go_FL_HELVETICA_BOLD)
-	HELVETICA_ITALIC      = Font(C.go_FL_HELVETICA_ITALIC)
-	HELVETICA_BOLD_ITALIC = Font(C.go_FL_HELVETICA_BOLD_ITALIC)
-	COURIER               = Font(C.go_FL_COURIER)
-	COURIER_BOLD          = Font(C.go_FL_COURIER_BOLD)
-	COURIER_ITALIC        = Font(C.go_FL_COURIER_ITALIC)
-	COURIER_BOLD_ITALIC   = Font(C.go_FL_COURIER_BOLD_ITALIC)
-	TIMES                 = Font(C.go_FL_TIMES)
-	TIMES_BOLD            = Font(C.go_FL_TIMES_BOLD)
-	TIMES_ITALIC          = Font(C.go_FL_TIMES_ITALIC)
-	TIMES_BOLD_ITALIC     = Font(C.go_FL_TIMES_BOLD_ITALIC)
-	SYMBOL                = Font(C.go_FL_SYMBOL)
-	SCREEN                = Font(C.go_FL_SCREEN)
-	SCREEN_BOLD           = Font(C.go_FL_SCREEN_BOLD)
-	ZAPF_DINGBATS         = Font(C.go_FL_ZAPF_DINGBATS)
-	FREE_FONT             = Font(C.go_FL_FREE_FONT)
-	BOLD                  = Font(C.go_FL_BOLD)
-	ITALIC                = Font(C.go_FL_ITALIC)
-	BOLD_ITALIC           = Font(C.go_FL_BOLD_ITALIC)
+	HELVETICA             = Font(C.Fl_Font_Helvetica)
+	HELVETICA_BOLD        = Font(C.Fl_Font_HelveticaBold)
+	HELVETICA_ITALIC      = Font(C.Fl_Font_HelveticaItalic)
+	HELVETICA_BOLD_ITALIC = Font(C.Fl_Font_HelveticaBoldItalic)
+	COURIER               = Font(C.Fl_Font_Courier)
+	COURIER_BOLD          = Font(C.Fl_Font_CourierBold)
+	COURIER_ITALIC        = Font(C.Fl_Font_CourierItalic)
+	COURIER_BOLD_ITALIC   = Font(C.Fl_Font_CourierBoldItalic)
+	TIMES                 = Font(C.Fl_Font_Times)
+	TIMES_BOLD            = Font(C.Fl_Font_TimesBold)
+	TIMES_ITALIC          = Font(C.Fl_Font_TimesItalic)
+	TIMES_BOLD_ITALIC     = Font(C.Fl_Font_TimesBoldItalic)
+	SYMBOL                = Font(C.Fl_Font_Symbol)
+	SCREEN                = Font(C.Fl_Font_Screen)
+	SCREEN_BOLD           = Font(C.Fl_Font_ScreenBold)
+	ZAPF_DINGBATS         = Font(C.Fl_Font_Zapfdingbats)
 )
 
 type LabelType int
 
 var (
-	NORMAL_LABEL = LabelType(C.go_FL_NORMAL_LABEL)
-	NO_LABEL     = LabelType(C.go_FL_NO_LABEL)
+	NORMAL_LABEL = LabelType(C.Fl_LabelType_Normal)
+	NO_LABEL     = LabelType(C.Fl_LabelType_None)
 )
 
 type WrapMode int
@@ -140,90 +136,89 @@ const (
 type Event int
 
 var (
-	NO_EVENT       = Event(C.go_FL_NO_EVENT)
-	PUSH           = Event(C.go_FL_PUSH)
-	DRAG           = Event(C.go_FL_DRAG)
-	RELEASE        = Event(C.go_FL_RELEASE)
-	MOVE           = Event(C.go_FL_MOVE)
-	MOUSEWHEEL     = Event(C.go_FL_MOUSEWHEEL)
-	ENTER          = Event(C.go_FL_ENTER)
-	LEAVE          = Event(C.go_FL_LEAVE)
-	FOCUS          = Event(C.go_FL_FOCUS)
-	UNFOCUS        = Event(C.go_FL_UNFOCUS)
-	KEY            = Event(C.go_FL_KEYDOWN)
-	KEYDOWN        = Event(C.go_FL_KEYDOWN)
-	KEYUP          = Event(C.go_FL_KEYUP)
-	SHORTCUT       = Event(C.go_FL_SHORTCUT)
-	DEACTIVATE     = Event(C.go_FL_DEACTIVATE)
-	ACTIVATE       = Event(C.go_FL_ACTIVATE)
-	HIDE           = Event(C.go_FL_HIDE)
-	SHOW           = Event(C.go_FL_SHOW)
-	PASTE          = Event(C.go_FL_PASTE)
-	SELECTIONCLEAR = Event(C.go_FL_SELECTIONCLEAR)
-	DND_ENTER      = Event(C.go_FL_DND_ENTER)
-	DND_DRAG       = Event(C.go_FL_DND_DRAG)
-	DND_LEAVE      = Event(C.go_FL_DND_LEAVE)
-	DND_RELEASE    = Event(C.go_FL_DND_RELEASE)
+	NO_EVENT       = Event(C.Fl_Event_None)
+	PUSH           = Event(C.Fl_Event_Push)
+	DRAG           = Event(C.Fl_Event_Drag)
+	RELEASE        = Event(C.Fl_Event_Released)
+	MOVE           = Event(C.Fl_Event_Move)
+	MOUSEWHEEL     = Event(C.Fl_Event_MouseWheel)
+	ENTER          = Event(C.Fl_Event_Enter)
+	LEAVE          = Event(C.Fl_Event_Leave)
+	FOCUS          = Event(C.Fl_Event_Focus)
+	UNFOCUS        = Event(C.Fl_Event_Unfocus)
+	KEY            = Event(C.Fl_Event_KeyDown)
+	KEYDOWN        = Event(C.Fl_Event_KeyDown)
+	KEYUP          = Event(C.Fl_Event_KeyUp)
+	SHORTCUT       = Event(C.Fl_Event_Shortcut)
+	DEACTIVATE     = Event(C.Fl_Event_Deactivate)
+	ACTIVATE       = Event(C.Fl_Event_Activate)
+	HIDE           = Event(C.Fl_Event_Hide)
+	SHOW           = Event(C.Fl_Event_Show)
+	PASTE          = Event(C.Fl_Event_Paste)
+	SELECTIONCLEAR = Event(C.Fl_Event_SelectionClear)
+	DND_ENTER      = Event(C.Fl_Event_DndEnter)
+	DND_DRAG       = Event(C.Fl_Event_DndDrag)
+	DND_LEAVE      = Event(C.Fl_Event_DndLeave)
+	DND_RELEASE    = Event(C.Fl_Event_DndRelease)
 )
 
 type CallbackCondition int
 
 var (
-	WhenNever           = CallbackCondition(C.go_FL_WHEN_NEVER)
-	WhenChanged         = CallbackCondition(C.go_FL_WHEN_CHANGED)
-	WhenNotChanged      = CallbackCondition(C.go_FL_WHEN_NOT_CHANGED)
-	WhenRelease         = CallbackCondition(C.go_FL_WHEN_RELEASE)
-	WhenReleaseAlways   = CallbackCondition(C.go_FL_WHEN_RELEASE_ALWAYS)
-	WhenEnterKey        = CallbackCondition(C.go_FL_WHEN_ENTER_KEY)
-	WhenEnterKeyAlways  = CallbackCondition(C.go_FL_WHEN_ENTER_KEY_ALWAYS)
-	WhenEnterKeyChanged = CallbackCondition(C.go_FL_WHEN_ENTER_KEY_CHANGED)
+	WhenNever           = CallbackCondition(C.Fl_CallbackTrigger_Never)
+	WhenChanged         = CallbackCondition(C.Fl_CallbackTrigger_Changed)
+	WhenNotChanged      = CallbackCondition(C.Fl_CallbackTrigger_NotChanged)
+	WhenRelease         = CallbackCondition(C.Fl_CallbackTrigger_Release)
+	WhenReleaseAlways   = CallbackCondition(C.Fl_CallbackTrigger_ReleaseAlways)
+	WhenEnterKey        = CallbackCondition(C.Fl_CallbackTrigger_EnterKey)
+	WhenEnterKeyAlways  = CallbackCondition(C.Fl_CallbackTrigger_EnterKeyAlways)
+	WhenEnterKeyChanged = CallbackCondition(C.Fl_CallbackTrigger_EnterKeyChanged)
 )
 
 var (
-	RGB         = int(C.go_FL_RGB)
-	INDEX       = int(C.go_FL_INDEX)
-	SINGLE      = int(C.go_FL_SINGLE)
-	DOUBLE      = int(C.go_FL_DOUBLE)
-	ACCUM       = int(C.go_FL_ACCUM)
-	ALPHA       = int(C.go_FL_ALPHA)
-	DEPTH       = int(C.go_FL_DEPTH)
-	STENCIL     = int(C.go_FL_STENCIL)
-	RGB8        = int(C.go_FL_RGB8)
-	MULTISAMPLE = int(C.go_FL_MULTISAMPLE)
-	STEREO      = int(C.go_FL_STEREO)
-	FAKE_SINGLE = int(C.go_FL_FAKE_SINGLE)
-	OPENGL3     = int(C.go_FL_OPENGL3)
+	RGB         = int(C.Fl_Mode_Rgb)
+	INDEX       = int(C.Fl_Mode_Index)
+	DOUBLE      = int(C.Fl_Mode_Double)
+	ACCUM       = int(C.Fl_Mode_Accum)
+	ALPHA       = int(C.Fl_Mode_Alpha)
+	DEPTH       = int(C.Fl_Mode_Depth)
+	STENCIL     = int(C.Fl_Mode_Stencil)
+	RGB8        = int(C.Fl_Mode_Rgb8)
+	MULTISAMPLE = int(C.Fl_Mode_MultiSample)
+	STEREO      = int(C.Fl_Mode_Stereo)
+	FAKE_SINGLE = int(C.Fl_Mode_FakeSingle)
+	OPENGL3     = int(C.Fl_Mode_Opengl3)
 )
 
 type Color uint
 
 var (
-	FOREGROUND_COLOR  = Color(C.go_FL_FOREGROUND_COLOR)
-	BACKGROUND2_COLOR = Color(C.go_FL_BACKGROUND2_COLOR)
-	INACTIVE_COLOR    = Color(C.go_FL_INACTIVE_COLOR)
-	SELECTION_COLOR   = Color(C.go_FL_SELECTION_COLOR)
-	GRAY0             = Color(C.go_FL_GRAY0)
-	DARK3             = Color(C.go_FL_DARK3)
-	DARK2             = Color(C.go_FL_DARK2)
-	DARK1             = Color(C.go_FL_DARK1)
-	BACKGROUND_COLOR  = Color(C.go_FL_BACKGROUND_COLOR)
-	LIGHT1            = Color(C.go_FL_LIGHT1)
-	LIGHT2            = Color(C.go_FL_LIGHT2)
-	LIGHT3            = Color(C.go_FL_LIGHT3)
-	BLACK             = Color(C.go_FL_BLACK)
-	RED               = Color(C.go_FL_RED)
-	GREEN             = Color(C.go_FL_GREEN)
-	YELLOW            = Color(C.go_FL_YELLOW)
-	BLUE              = Color(C.go_FL_BLUE)
-	MAGENTA           = Color(C.go_FL_MAGENTA)
-	CYAN              = Color(C.go_FL_CYAN)
-	DARK_RED          = Color(C.go_FL_DARK_RED)
-	DARK_GREEN        = Color(C.go_FL_DARK_GREEN)
-	DARK_YELLOW       = Color(C.go_FL_DARK_YELLOW)
-	DARK_BLUE         = Color(C.go_FL_DARK_BLUE)
-	DARK_MAGENTA      = Color(C.go_FL_DARK_MAGENTA)
-	DARK_CYAN         = Color(C.go_FL_DARK_CYAN)
-	WHITE             = Color(C.go_FL_WHITE)
+	FOREGROUND_COLOR  = Color(C.Fl_Color_Foreground)
+	BACKGROUND2_COLOR = Color(C.Fl_Color_Background2)
+	INACTIVE_COLOR    = Color(C.Fl_Color_Inactive)
+	SELECTION_COLOR   = Color(C.Fl_Color_Selection)
+	GRAY0             = Color(C.Fl_Color_Gray0)
+	DARK3             = Color(C.Fl_Color_Dark3)
+	DARK2             = Color(C.Fl_Color_Dark2)
+	DARK1             = Color(C.Fl_Color_Dark1)
+	BACKGROUND_COLOR  = Color(C.Fl_Color_Background)
+	LIGHT1            = Color(C.Fl_Color_Light1)
+	LIGHT2            = Color(C.Fl_Color_Light2)
+	LIGHT3            = Color(C.Fl_Color_Light3)
+	BLACK             = Color(C.Fl_Color_Black)
+	RED               = Color(C.Fl_Color_Red)
+	GREEN             = Color(C.Fl_Color_Green)
+	YELLOW            = Color(C.Fl_Color_Yellow)
+	BLUE              = Color(C.Fl_Color_Blue)
+	MAGENTA           = Color(C.Fl_Color_Magenta)
+	CYAN              = Color(C.Fl_Color_Cyan)
+	DARK_RED          = Color(C.Fl_Color_DarkRed)
+	DARK_GREEN        = Color(C.Fl_Color_DarkGreen)
+	DARK_YELLOW       = Color(C.Fl_Color_DarkYellow)
+	DARK_BLUE         = Color(C.Fl_Color_DarkBlue)
+	DARK_MAGENTA      = Color(C.Fl_Color_DarkMagenta)
+	DARK_CYAN         = Color(C.Fl_Color_DarkCyan)
+	WHITE             = Color(C.Fl_Color_White)
 )
 
 func ColorFromRgb(r, g, b uint8) Color {
@@ -292,24 +287,24 @@ func _go_callbackHandler(id uintptr) {
 }
 
 type eventHandlerMap struct {
-	eventHandlerMap map[int]func(Event) bool
-	id              int
+	eventHandlerMap map[uintptr]func(Event) bool
+	id              uintptr
 }
 
 func newEventHandlerMap() *eventHandlerMap {
 	return &eventHandlerMap{
-		eventHandlerMap: make(map[int]func(Event) bool),
+		eventHandlerMap: make(map[uintptr]func(Event) bool),
 	}
 }
-func (m *eventHandlerMap) register(fn func(Event) bool) int {
+func (m *eventHandlerMap) register(fn func(Event) bool) uintptr {
 	m.id++
 	m.eventHandlerMap[m.id] = fn
 	return m.id
 }
-func (m *eventHandlerMap) unregister(id int) {
+func (m *eventHandlerMap) unregister(id uintptr) {
 	delete(m.eventHandlerMap, id)
 }
-func (m *eventHandlerMap) invoke(id int, event Event) bool {
+func (m *eventHandlerMap) invoke(id uintptr, event Event) bool {
 	if handler, ok := m.eventHandlerMap[id]; ok && handler != nil {
 		return handler(event)
 	}
@@ -330,13 +325,13 @@ func (m *eventHandlerMap) clear() {
 var globalEventHandlerMap = newEventHandlerMap()
 
 //export _go_eventHandler
-func _go_eventHandler(handlerId C.int, event C.int) C.int {
-	if globalEventHandlerMap.invoke(int(handlerId), Event(event)) {
+func _go_eventHandler(handlerId C.uintptr_t, event C.int) C.int {
+	if globalEventHandlerMap.invoke(uintptr(handlerId), Event(event)) {
 		return 1
 	}
 	return 0
 }
 
 var (
-	ESCAPE = int(C.go_FL_ESCAPE)
+	ESCAPE = int(C.Fl_Key_Escape)
 )

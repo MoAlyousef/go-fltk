@@ -2,7 +2,7 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "dialogs.h"
+#include "include/cfltk/cfl_dialog.h"
 */
 import "C"
 import "unsafe"
@@ -12,7 +12,8 @@ func MessageBox(title, message string) {
 	defer C.free(unsafe.Pointer(titleStr))
 	messageStr := C.CString(message)
 	defer C.free(unsafe.Pointer(messageStr))
-	C.go_fltk_message_box(titleStr, messageStr)
+	C.Fl_message_title(titleStr)
+	C.Fl_message2(messageStr)
 }
 
 func ChoiceDialog(message string, options ...string) int {
@@ -33,5 +34,10 @@ func ChoiceDialog(message string, options ...string) int {
 		option2 = C.CString(options[2])
 		defer C.free(unsafe.Pointer(option2))
 	}
-	return int(C.go_fltk_choice_dialog(messageStr, option0, option1, option2))
+	// option3 := (*C.char)(nil)
+	// if len(options) > 2 {
+	// 	option3 = C.CString(options[3])
+	// 	defer C.free(unsafe.Pointer(option3))
+	// }
+	return int(C.Fl_choice2(messageStr, option0, option1, option2))
 }

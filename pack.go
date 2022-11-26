@@ -1,7 +1,7 @@
 package fltk
 
 /*
-#include "pack.h"
+#include "include/cfltk/cfl_group.h"
 */
 import "C"
 import "unsafe"
@@ -12,20 +12,20 @@ type Pack struct {
 
 func NewPack(x, y, w, h int, text ...string) *Pack {
 	p := &Pack{}
-	initGroup(p, unsafe.Pointer(C.go_fltk_new_Pack(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initGroup(p, unsafe.Pointer(C.Fl_Pack_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return p
 }
 
 type PackType uint8
 
 var (
-	VERTICAL   = PackType(C.go_FL_PACK_VERTICAL)
-	HORIZONTAL = PackType(C.go_FL_PACK_HORIZONTAL)
+	VERTICAL   = PackType(0)
+	HORIZONTAL = PackType(1)
 )
 
 func (p *Pack) SetType(packType PackType) {
 	p.widget.SetType(uint8(packType))
 }
 func (p *Pack) SetSpacing(spacing int) {
-	C.go_fltk_Pack_set_spacing((*C.GPack)(p.ptr()), C.int(spacing))
+	C.Fl_Pack_set_spacing((*C.Fl_Pack)(p.ptr()), C.int(spacing))
 }

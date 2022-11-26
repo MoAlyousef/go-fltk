@@ -2,7 +2,8 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "file_chooser.h"
+#include "include/cfltk/cfl_dialog.h"
+#include "include/cfltk/cfl_enums.h"
 */
 import "C"
 import (
@@ -21,10 +22,10 @@ var ErrFileChooserDestroyed = errors.New("file chooser is destroyed")
 type FileChooserType int
 
 var (
-	FileChooser_SINGLE    = FileChooserType(C.go_FL_FileChooser_SINGLE)
-	FileChooser_MULTI     = FileChooserType(C.go_FL_FileChooser_MULTI)
-	FileChooser_CREATE    = FileChooserType(C.go_FL_FileChooser_CREATE)
-	FileChooser_DIRECTORY = FileChooserType(C.go_FL_FileChooser_DIRECTORY)
+	FileChooser_SINGLE    = FileChooserType(C.Fl_FileChooserType_Single)
+	FileChooser_MULTI     = FileChooserType(C.Fl_FileChooserType_Multi)
+	FileChooser_CREATE    = FileChooserType(C.Fl_FileChooserType_Create)
+	FileChooser_DIRECTORY = FileChooserType(C.Fl_FileChooserType_Directory)
 )
 
 func NewFileChooser(pathname, pattern string, fctype FileChooserType, title string) *FileChooser {
@@ -32,7 +33,7 @@ func NewFileChooser(pathname, pattern string, fctype FileChooserType, title stri
 	c.pathname = C.CString(pathname)
 	c.pattern = C.CString(pattern)
 	c.title = C.CString(title)
-	c.cPtr = C.go_fltk_new_FileChooser(c.pathname, c.pattern, C.int(fctype), c.title)
+	c.cPtr = C.Fl_File_Chooser_new(c.pathname, c.pattern, C.int(fctype), c.title)
 	return c
 }
 
@@ -58,7 +59,7 @@ func (c *FileChooser) Destroy() {
 	if c.callbackId > 0 {
 		globalCallbackMap.unregister(c.callbackId)
 	}
-	C.go_fltk_FileChooser_destroy(c.ptr())
+	C.Fl_File_Chooser_delete(c.ptr())
 	c.cPtr = nil
 }
 
@@ -67,29 +68,29 @@ func (c *FileChooser) SetCallback(callback func()) {
 		globalCallbackMap.unregister(c.callbackId)
 	}
 	c.callbackId = globalCallbackMap.register(callback)
-	C.go_fltk_FileChooser_set_callback(c.ptr(), C.uintptr_t(c.callbackId))
+	// C.Fl_File_Chooser_set_callback(c.ptr(), C.uintptr_t(c.callbackId))
 }
 func (c *FileChooser) Show() {
-	C.go_fltk_FileChooser_show((*C.Fl_File_Chooser)(c.ptr()))
+	C.Fl_File_Chooser_show((*C.Fl_File_Chooser)(c.ptr()))
 }
 func (c *FileChooser) Popup() {
-	C.go_fltk_FileChooser_popup((*C.Fl_File_Chooser)(c.ptr()))
+	C.Fl_File_Chooser_show((*C.Fl_File_Chooser)(c.ptr()))
 }
 func (c *FileChooser) Shown() bool {
-	return C.go_fltk_FileChooser_shown(c.ptr()) != 0
+	return C.Fl_File_Chooser_shown(c.ptr()) != 0
 }
 func (c *FileChooser) SetPreview(enable bool) {
 	if enable {
-		C.go_fltk_FileChooser_preview(c.ptr(), 1)
+		C.Fl_File_Chooser_preview(c.ptr())
 	} else {
-		C.go_fltk_FileChooser_preview(c.ptr(), 0)
+		// C.Fl_File_Chooser_preview(c.ptr(), 0)
 	}
 }
 func (c *FileChooser) Selection() []string {
-	count := int(C.go_fltk_FileChooser_count(c.ptr()))
+	count := int(C.Fl_File_Chooser_count(c.ptr()))
 	var selection []string
 	for i := 1; i <= count; i++ {
-		value := C.GoString(C.go_fltk_FileChooser_value(c.ptr(), C.int(i)))
+		value := C.GoString(C.Fl_File_Chooser_value(c.ptr(), C.int(i)))
 		selection = append(selection, value)
 	}
 	return selection
@@ -106,7 +107,7 @@ func ChooseFile(message, pattern, initialFilename string, relative bool) (string
 	defer C.free(unsafe.Pointer(patternStr))
 	initialFilenameStr := C.CString(initialFilename)
 	defer C.free(unsafe.Pointer(initialFilenameStr))
-	res := C.go_fltk_file_chooser(messageStr, patternStr, initialFilenameStr, C.int(rel))
+	res := C.Fl_file_chooser(messageStr, patternStr, initialFilenameStr, C.int(rel))
 	if res == nil {
 		return "", false
 	}

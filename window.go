@@ -2,7 +2,9 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "window.h"
+#include "include/cfltk/cfl_window.h"
+#include "include/cfltk/cfl_image.h"
+#include "include/cfltk/cfl_enums.h"
 */
 import "C"
 import "unsafe"
@@ -12,28 +14,30 @@ type Window struct {
 	icons []*RgbImage
 }
 
-func NewWindow(w, h int) *Window {
+func NewWindow(w, h int, text ...string) *Window {
 	win := &Window{}
-	initGroup(win, unsafe.Pointer(C.go_fltk_new_Window(C.int(w), C.int(h))))
+	ptr := C.Fl_Double_Window_new(C.int(0), C.int(0), C.int(w), C.int(h), cStringOpt(text))
+	C.Fl_Double_Window_free_position(ptr)
+	initGroup(win, unsafe.Pointer(ptr))
 	return win
 }
 func (w *Window) IsShown() bool {
-	return C.go_fltk_Window_shown((*C.GWindow)(w.ptr())) != 0
+	return C.Fl_Double_Window_shown((*C.Fl_Double_Window)(w.ptr())) != 0
 }
-func (w *Window) Show() { C.go_fltk_Window_show((*C.GWindow)(w.ptr())) }
+func (w *Window) Show() { C.Fl_Double_Window_show((*C.Fl_Double_Window)(w.ptr())) }
 func (w *Window) XRoot() int {
-	return int(C.go_fltk_Window_x_root((*C.GWindow)(w.ptr())))
+	return int(C.Fl_Double_Window_x_root((*C.Fl_Double_Window)(w.ptr())))
 }
 func (w *Window) YRoot() int {
-	return int(C.go_fltk_Window_y_root((*C.GWindow)(w.ptr())))
+	return int(C.Fl_Double_Window_y_root((*C.Fl_Double_Window)(w.ptr())))
 }
 func (w *Window) SetLabel(label string) {
 	labelStr := C.CString(label)
 	defer C.free(unsafe.Pointer(labelStr))
-	C.go_fltk_Window_set_label((*C.GWindow)(w.ptr()), labelStr)
+	C.Fl_Double_Window_set_label((*C.Fl_Double_Window)(w.ptr()), labelStr)
 }
 func (w *Window) SetCursor(cursor Cursor) {
-	C.go_fltk_Window_set_cursor((*C.GWindow)(w.ptr()), C.int(cursor))
+	C.Fl_Double_Window_set_cursor((*C.Fl_Double_Window)(w.ptr()), C.int(cursor))
 }
 
 func (w *Window) SetFullscreen(flag bool) {
@@ -41,19 +45,19 @@ func (w *Window) SetFullscreen(flag bool) {
 	if flag {
 		f = 1
 	}
-	C.go_fltk_Window_set_fullscreen((*C.GWindow)(w.ptr()), C.int(f))
+	C.Fl_Double_Window_fullscreen((*C.Fl_Double_Window)(w.ptr()), C.uint(f))
 }
 
 func (w *Window) FullscreenActive() bool {
-	return C.go_fltk_Window_fullscreen_active((*C.GWindow)(w.ptr())) != 0
+	return C.Fl_Double_Window_fullscreen_active((*C.Fl_Double_Window)(w.ptr())) != 0
 }
 
 func (w *Window) SetModal() {
-	C.go_fltk_Window_set_modal((*C.GWindow)(w.ptr()))
+	C.Fl_Double_Window_make_modal((*C.Fl_Double_Window)(w.ptr()), C.uint(1))
 }
 
 func (w *Window) SetNonModal() {
-	C.go_fltk_Window_set_non_modal((*C.GWindow)(w.ptr()))
+	C.Fl_Double_Window_make_modal((*C.Fl_Double_Window)(w.ptr()), C.uint(0))
 }
 
 func (w *Window) SetIcons(icons []*RgbImage) {
@@ -61,31 +65,31 @@ func (w *Window) SetIcons(icons []*RgbImage) {
 	for _, icon := range icons {
 		images = append(images, (*C.Fl_RGB_Image)(icon.iPtr))
 	}
-	C.go_fltk_Window_set_icons((*C.GWindow)(w.ptr()), &images[0], C.int(len(images)))
+	// C.Fl_Double_Window_set_icons((*C.Fl_Double_Window)(w.ptr()), (unsafe.Pointer)(&images[0]), C.int(len(images)))
 	w.icons = icons
 }
 
 type Cursor int
 
 var (
-	CURSOR_DEFAULT = Cursor(C.go_FL_CURSOR_DEFAULT)
-	CURSOR_ARROW   = Cursor(C.go_FL_CURSOR_ARROW)
-	CURSOR_CROSS   = Cursor(C.go_FL_CURSOR_CROSS)
-	CURSOR_WAIT    = Cursor(C.go_FL_CURSOR_WAIT)
-	CURSOR_INSERT  = Cursor(C.go_FL_CURSOR_INSERT)
-	CURSOR_HAND    = Cursor(C.go_FL_CURSOR_HAND)
-	CURSOR_HELP    = Cursor(C.go_FL_CURSOR_HELP)
-	CURSOR_MOVE    = Cursor(C.go_FL_CURSOR_MOVE)
-	CURSOR_NS      = Cursor(C.go_FL_CURSOR_NS)
-	CURSOR_WE      = Cursor(C.go_FL_CURSOR_WE)
-	CURSOR_NWSE    = Cursor(C.go_FL_CURSOR_NWSE)
-	CURSOR_NESW    = Cursor(C.go_FL_CURSOR_NESW)
-	CURSOR_N       = Cursor(C.go_FL_CURSOR_N)
-	CURSOR_NE      = Cursor(C.go_FL_CURSOR_NE)
-	CURSOR_E       = Cursor(C.go_FL_CURSOR_E)
-	CURSOR_SE      = Cursor(C.go_FL_CURSOR_SE)
-	CURSOR_S       = Cursor(C.go_FL_CURSOR_S)
-	CURSOR_SW      = Cursor(C.go_FL_CURSOR_SW)
-	CURSOR_W       = Cursor(C.go_FL_CURSOR_W)
-	CURSOR_NW      = Cursor(C.go_FL_CURSOR_NW)
+	CURSOR_DEFAULT = Cursor(C.Fl_Cursor_Default)
+	CURSOR_ARROW   = Cursor(C.Fl_Cursor_Arrow)
+	CURSOR_CROSS   = Cursor(C.Fl_Cursor_Cross)
+	CURSOR_WAIT    = Cursor(C.Fl_Cursor_Wait)
+	CURSOR_INSERT  = Cursor(C.Fl_Cursor_Insert)
+	CURSOR_HAND    = Cursor(C.Fl_Cursor_Hand)
+	CURSOR_HELP    = Cursor(C.Fl_Cursor_Help)
+	CURSOR_MOVE    = Cursor(C.Fl_Cursor_Move)
+	CURSOR_NS      = Cursor(C.Fl_Cursor_NS)
+	CURSOR_WE      = Cursor(C.Fl_Cursor_WE)
+	CURSOR_NWSE    = Cursor(C.Fl_Cursor_NWSE)
+	CURSOR_NESW    = Cursor(C.Fl_Cursor_NESW)
+	CURSOR_N       = Cursor(C.Fl_Cursor_N)
+	CURSOR_NE      = Cursor(C.Fl_Cursor_NE)
+	CURSOR_E       = Cursor(C.Fl_Cursor_E)
+	CURSOR_SE      = Cursor(C.Fl_Cursor_SE)
+	CURSOR_S       = Cursor(C.Fl_Cursor_S)
+	CURSOR_SW      = Cursor(C.Fl_Cursor_SW)
+	CURSOR_W       = Cursor(C.Fl_Cursor_W)
+	CURSOR_NW      = Cursor(C.Fl_Cursor_NW)
 )

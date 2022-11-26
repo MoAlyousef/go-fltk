@@ -1,7 +1,7 @@
 package fltk
 
 /*
-#include "tabs.h"
+#include "include/cfltk/cfl_group.h"
 */
 import "C"
 import "unsafe"
@@ -12,14 +12,16 @@ type Tabs struct {
 
 func NewTabs(x, y, w, h int, text ...string) *Tabs {
 	i := &Tabs{}
-	initGroup(i, unsafe.Pointer(C.go_fltk_new_Tabs(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initGroup(i, unsafe.Pointer(C.Fl_Tabs_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return i
 }
 
 func (t *Tabs) Value() int {
-	return int(C.go_fltk_Tabs_value((*C.GTabs)(t.ptr())))
+
+	// val := C.Fl_Tabs_value((*C.Fl_Tabs)(t.ptr()))
+	return int(0)
 }
 
 func (t *Tabs) SetValue(value int) {
-	C.go_fltk_Tabs_set_value((*C.GTabs)(t.ptr()), (C.int)(value))
+	// C.Fl_Tabs_set_value((*C.Fl_Tabs)(t.ptr()), (C.int)(value))
 }

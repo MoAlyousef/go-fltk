@@ -1,70 +1,71 @@
 package fltk
 
 /*
-#include "events.h"
+#include "include/cfltk/cfl_enums.h"
+#include "include/cfltk/cfl.h"
 */
 import "C"
 
 type MouseButton int
 
 var (
-	LeftMouse   = MouseButton(C.go_FL_LEFT_MOUSE)
-	MiddleMouse = MouseButton(C.go_FL_MIDDLE_MOUSE)
-	RightMouse  = MouseButton(C.go_FL_RIGHT_MOUSE)
+	LeftMouse   = MouseButton(C.Fl_Shortcut_Button1)
+	MiddleMouse = MouseButton(C.Fl_Shortcut_Button2)
+	RightMouse  = MouseButton(C.Fl_Shortcut_Button3)
 )
 
 func EventType() Event {
-	return Event(C.go_fltk_event())
+	return Event(C.Fl_event())
 }
 
 func EventButton() MouseButton {
-	return MouseButton(C.go_fltk_event_button())
+	return MouseButton(C.Fl_event_button())
 }
 
 func EventButton1() bool {
-	return C.go_fltk_event_button1() != 0
+	return C.Fl_event_button() != 0
 }
 func EventX() int {
-	return int(C.go_fltk_event_x())
+	return int(C.Fl_event_x())
 }
 func EventY() int {
-	return int(C.go_fltk_event_y())
+	return int(C.Fl_event_y())
 }
 func EventXRoot() int {
-	return int(C.go_fltk_event_x_root())
+	return int(C.Fl_event_x_root())
 }
 func EventYRoot() int {
-	return int(C.go_fltk_event_y_root())
+	return int(C.Fl_event_y_root())
 }
 func EventDX() int {
-	return int(C.go_fltk_event_dx())
+	return int(C.Fl_event_dx())
 }
 func EventDY() int {
-	return int(C.go_fltk_event_dy())
+	return int(C.Fl_event_dy())
 }
 func EventKey() int {
-	return int(C.go_fltk_event_key())
+	return int(C.Fl_event_key())
 }
 func EventIsClick() bool {
-	return C.go_fltk_event_is_click() != 0
+	return C.Fl_event_is_click() != 0
 }
 func EventText() string {
-	return C.GoString(C.go_fltk_event_text())
+	return C.GoString(C.Fl_event_text())
 }
 
 var (
-	SHIFT       = int(C.go_FL_SHIFT)
-	CAPS_LOCK   = int(C.go_FL_CAPS_LOCK)
-	CTRL        = int(C.go_FL_CTRL)
-	ALT         = int(C.go_FL_ALT)
-	NUM_LOCK    = int(C.go_FL_NUM_LOCK)
-	META        = int(C.go_FL_META)
-	SCROLL_LOCK = int(C.go_FL_SCROLL_LOCK)
-	BUTTON1     = int(C.go_FL_BUTTON1)
-	BUTTON2     = int(C.go_FL_BUTTON2)
-	BUTTON3     = int(C.go_FL_BUTTON3)
+	SHIFT       = int(C.Fl_Shortcut_Shift)
+	CAPS_LOCK   = int(C.Fl_Shortcut_CapsLock)
+	CTRL        = int(C.Fl_Shortcut_Ctrl)
+	ALT         = int(C.Fl_Shortcut_Alt)
+	NUM_LOCK    = int(C.Fl_Key_NumLock)
+	META        = int(C.Fl_Shortcut_Meta)
+	SCROLL_LOCK = int(C.Fl_Key_ScrollLock)
+	BUTTON1     = int(C.Fl_Shortcut_Button1)
+	BUTTON2     = int(C.Fl_Shortcut_Button2)
+	BUTTON3     = int(C.Fl_Shortcut_Button3)
 )
 
 func EventState() int {
-	return int(C.go_fltk_event_state())
+	return int(C.Fl_event_state())
 }
