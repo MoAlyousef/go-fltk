@@ -2,6 +2,8 @@ package fltk
 
 /*
 #include "include/cfltk/cfl_group.h"
+#include <stdint.h>
+#include "fltk.h"
 */
 import "C"
 import (
@@ -97,4 +99,12 @@ func (g *Group) onDelete() {
 	if currentGroup == g {
 		currentGroup = nil
 	}
+}
+
+func (w *Group) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Group_draw((*C.Fl_Group)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
 }
