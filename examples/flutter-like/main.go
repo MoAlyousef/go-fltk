@@ -23,7 +23,7 @@ func main() {
 	win.SetColor(fltk.WHITE)
 	bar := fltk.NewBox(fltk.FLAT_BOX, 0, 0, WIDTH, 60, "    FLTK App!")
 	bar.SetDrawHandler(func() { // Shadow under the bar
-		fltk.DrawBox(fltk.FLAT_BOX, 0, 0, WIDTH, 63, LIGHT_GRAY)
+		fltk.DrawBox(fltk.FLAT_BOX, 0, 60, WIDTH, 3, LIGHT_GRAY)
 	})
 	bar.SetAlign(fltk.ALIGN_INSIDE | fltk.ALIGN_LEFT)
 	bar.SetLabelColor(255) // this uses the index into the color map, here it's white

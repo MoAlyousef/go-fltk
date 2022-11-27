@@ -24,6 +24,7 @@ func NewWindow(w, h int, text ...string) *Window {
 func (w *Window) IsShown() bool {
 	return C.Fl_Double_Window_shown((*C.Fl_Double_Window)(w.ptr())) != 0
 }
+
 func (w *Window) Show() { C.Fl_Double_Window_show((*C.Fl_Double_Window)(w.ptr())) }
 func (w *Window) XRoot() int {
 	return int(C.Fl_Double_Window_x_root((*C.Fl_Double_Window)(w.ptr())))
@@ -61,11 +62,11 @@ func (w *Window) SetNonModal() {
 }
 
 func (w *Window) SetIcons(icons []*RgbImage) {
-	images := make([]*C.Fl_RGB_Image, 0, len(icons))
+	images := make([]unsafe.Pointer, 0, len(icons))
 	for _, icon := range icons {
-		images = append(images, (*C.Fl_RGB_Image)(icon.iPtr))
+		images = append(images, unsafe.Pointer(icon.iPtr))
 	}
-	// C.Fl_Double_Window_set_icons((*C.Fl_Double_Window)(w.ptr()), (unsafe.Pointer)(&images[0]), C.int(len(images)))
+	C.Fl_Double_Window_set_icons((*C.Fl_Double_Window)(w.ptr()), &images[0], C.int(len(images)))
 	w.icons = icons
 }
 

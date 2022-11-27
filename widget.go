@@ -2,6 +2,7 @@ package fltk
 
 /*
 #include <stdlib.h>
+#include <stdint.h>
 #include "include/cfltk/cfl_widget.h"
 #include "include/cfltk/cfl.h"
 
@@ -77,7 +78,7 @@ func (w *widget) exists() bool {
 
 func (w *widget) addDeletionHandler(handler func()) uintptr {
 	deletionHandlerId := globalCallbackMap.register(handler)
-	C.Fl_Widget_set_deletion_callback(w.ptr(), (*[0]byte)(C.go_deleter), unsafe.Pointer(deletionHandlerId))
+	// C.Fl_Widget_set_deletion_callback(w.ptr(), (*[0]byte)(C.go_deleter), unsafe.Pointer(deletionHandlerId))
 	return deletionHandlerId
 }
 func (w *widget) SetCallback(f func()) {
