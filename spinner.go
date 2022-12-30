@@ -1,9 +1,9 @@
 package fltk
 
 /*
-#include "include/cfltk/cfl_enums.h"
-#include "include/cfltk/cfl_input.h"
-#include "include/cfltk/cfl_misc.h"
+#include "cfltk/cfl_enums.h"
+#include "cfltk/cfl_input.h"
+#include "cfltk/cfl_misc.h"
 */
 import "C"
 import "unsafe"

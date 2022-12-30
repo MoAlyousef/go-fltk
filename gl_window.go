@@ -1,7 +1,7 @@
 package fltk
 
 /*
-#include "include/cfltk/cfl_window.h"
+#include "cfltk/cfl_window.h"
 */
 import "C"
 import (
@@ -18,7 +18,7 @@ func NewGlWindow(x, y, w, h int, drawFun func(), text ...string) *GlWindow {
 	win := &GlWindow{}
 	win.drawFunId = globalCallbackMap.register(drawFun)
 	initGroup(win, unsafe.Pointer(C.Fl_Gl_Window_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
-	win.deletionHandlerId = win.addDeletionHandler(win.onDelete)
+	// win.setDeletionHandler(win.onDelete)
 	win.SetDrawHandler(drawFun)
 	return win
 }

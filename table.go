@@ -1,8 +1,8 @@
 package fltk
 
 /*
-#include "include/cfltk/cfl_table.h"
-#include "include/cfltk/cfl_enums.h"
+#include "cfltk/cfl_table.h"
+#include "cfltk/cfl_enums.h"
 */
 import "C"
 import (
@@ -144,7 +144,7 @@ var (
 func NewTableRow(x, y, w, h int, text ...string) *TableRow {
 	t := &TableRow{}
 	initGroup(t, unsafe.Pointer(C.Fl_Table_Row_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
-	t.deletionHandlerId = t.addDeletionHandler(t.onDelete)
+	// t.setDeletionHandler(t.onDelete)
 	return t
 }
 

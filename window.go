@@ -2,9 +2,9 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "include/cfltk/cfl_window.h"
-#include "include/cfltk/cfl_image.h"
-#include "include/cfltk/cfl_enums.h"
+#include "cfltk/cfl_window.h"
+#include "cfltk/cfl_image.h"
+#include "cfltk/cfl_enums.h"
 */
 import "C"
 import "unsafe"
@@ -25,18 +25,20 @@ func (w *Window) IsShown() bool {
 	return C.Fl_Double_Window_shown((*C.Fl_Double_Window)(w.ptr())) != 0
 }
 
-func (w *Window) Show() { C.Fl_Double_Window_show((*C.Fl_Double_Window)(w.ptr())) }
 func (w *Window) XRoot() int {
 	return int(C.Fl_Double_Window_x_root((*C.Fl_Double_Window)(w.ptr())))
 }
+
 func (w *Window) YRoot() int {
 	return int(C.Fl_Double_Window_y_root((*C.Fl_Double_Window)(w.ptr())))
 }
+
 func (w *Window) SetLabel(label string) {
 	labelStr := C.CString(label)
 	defer C.free(unsafe.Pointer(labelStr))
 	C.Fl_Double_Window_set_label((*C.Fl_Double_Window)(w.ptr()), labelStr)
 }
+
 func (w *Window) SetCursor(cursor Cursor) {
 	C.Fl_Double_Window_set_cursor((*C.Fl_Double_Window)(w.ptr()), C.int(cursor))
 }

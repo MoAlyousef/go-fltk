@@ -2,7 +2,7 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "include/cfltk/cfl_image.h"
+#include "cfltk/cfl_image.h"
 */
 import "C"
 import (

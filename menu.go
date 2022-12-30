@@ -2,8 +2,8 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "include/cfltk/cfl_menu.h"
-#include "include/cfltk/cfl_enums.h"
+#include "cfltk/cfl_menu.h"
+#include "cfltk/cfl_enums.h"
 */
 import "C"
 import "unsafe"
@@ -18,7 +18,7 @@ func (m *menu) init() {
 	if m.deletionHandlerId > 0 {
 		panic("menu already initialized")
 	}
-	m.deletionHandlerId = m.addDeletionHandler(m.onDelete)
+	// m.setDeletionHandler(m.onDelete)
 }
 func (m *menu) onDelete() {
 	if m.deletionHandlerId > 0 {

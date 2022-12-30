@@ -2,7 +2,7 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "include/cfltk/cfl_dialog.h"
+#include "cfltk/cfl_dialog.h"
 */
 import "C"
 import "unsafe"

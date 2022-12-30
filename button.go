@@ -1,7 +1,7 @@
 package fltk
 
 /*
-#include "include/cfltk/cfl_button.h"
+#include "cfltk/cfl_button.h"
 */
 import "C"
 import "unsafe"

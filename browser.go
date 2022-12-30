@@ -2,7 +2,7 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "include/cfltk/cfl_browser.h"
+#include "cfltk/cfl_browser.h"
 */
 import "C"
 import (

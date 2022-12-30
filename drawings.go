@@ -2,7 +2,7 @@ package fltk
 
 /*
 #include <stdlib.h>
-#include "include/cfltk/cfl_draw.h"
+#include "cfltk/cfl_draw.h"
 */
 import "C"
 import "unsafe"

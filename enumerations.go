@@ -1,7 +1,7 @@
 package fltk
 
 /*
-#include "include/cfltk/cfl_enums.h"
+#include "cfltk/cfl_enums.h"
 #include <stdint.h>
 */
 import "C"

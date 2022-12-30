@@ -1,7 +1,7 @@
 package fltk
 
 /*
-#include "include/cfltk/cfl_menu.h"
+#include "cfltk/cfl_menu.h"
 */
 import "C"
 import "unsafe"

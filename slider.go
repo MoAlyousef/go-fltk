@@ -1,8 +1,8 @@
 package fltk
 
 /*
-#include "include/cfltk/cfl_valuator.h"
-#include "include/cfltk/cfl_enums.h"
+#include "cfltk/cfl_valuator.h"
+#include "cfltk/cfl_enums.h"
 */
 import "C"
 import "unsafe"
