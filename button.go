@@ -19,6 +19,7 @@ func NewButton(x, y, w, h int, text ...string) *Button {
 func (b *Button) Value() bool {
 	return C.Fl_Button_value((*C.Fl_Button)(b.ptr())) != C.int(0)
 }
+
 func (b *Button) SetValue(val bool) {
 	if val {
 		C.Fl_Button_set_value((*C.Fl_Button)(b.ptr()), 1)
@@ -26,6 +27,7 @@ func (b *Button) SetValue(val bool) {
 		C.Fl_Button_set_value((*C.Fl_Button)(b.ptr()), 0)
 	}
 }
+
 func (b *Button) SetDownBox(box BoxType) {
 	C.Fl_Button_set_down_box((*C.Fl_Button)(b.ptr()), C.int(box))
 }

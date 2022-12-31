@@ -3,6 +3,7 @@ package fltk
 /*
 #include "cfltk/cfl_table.h"
 #include "cfltk/cfl_enums.h"
+#include "fltk.h"
 */
 import "C"
 import (
@@ -17,67 +18,87 @@ type table struct {
 func (t *table) SetRowCount(rowCount int) {
 	C.Fl_Table_set_rows((*C.Fl_Table)(t.ptr()), C.int(rowCount))
 }
+
 func (t *table) SetRowHeight(row, height int) {
 	C.Fl_Table_set_row_height((*C.Fl_Table)(t.ptr()), C.int(row), C.int(height))
 }
+
 func (t *table) SetRowHeightAll(height int) {
 	C.Fl_Table_set_row_height_all((*C.Fl_Table)(t.ptr()), C.int(height))
 }
+
 func (t *table) EnableRowHeaders() {
 	C.Fl_Table_set_row_header((*C.Fl_Table)(t.ptr()), 1)
 }
+
 func (t *table) DisableRowHeaders() {
 	C.Fl_Table_set_row_header((*C.Fl_Table)(t.ptr()), 0)
 }
+
 func (t *table) AllowRowResizing() {
 	C.Fl_Table_set_row_resize((*C.Fl_Table)(t.ptr()), 1)
 }
+
 func (t *table) DisallowRowResizing() {
 	C.Fl_Table_set_row_resize((*C.Fl_Table)(t.ptr()), 0)
 }
+
 func (t *table) SetColumnCount(columnCount int) {
 	C.Fl_Table_set_cols((*C.Fl_Table)(t.ptr()), C.int(columnCount))
 }
+
 func (t *table) SetColumnWidth(column, width int) {
 	C.Fl_Table_set_col_width((*C.Fl_Table)(t.ptr()), C.int(column), C.int(width))
 }
+
 func (t *table) SetColumnWidthAll(width int) {
 	C.Fl_Table_set_col_width_all((*C.Fl_Table)(t.ptr()), C.int(width))
 }
+
 func (t *table) EnableColumnHeaders() {
 	C.Fl_Table_set_col_header((*C.Fl_Table)(t.ptr()), 1)
 }
+
 func (t *table) DisableColumnHeaders() {
 	C.Fl_Table_set_col_header((*C.Fl_Table)(t.ptr()), 0)
 }
+
 func (t *table) AllowColumnResizing() {
 	C.Fl_Table_set_col_resize((*C.Fl_Table)(t.ptr()), 1)
 }
+
 func (t *table) DisallowColumnResizing() {
 	C.Fl_Table_set_col_resize((*C.Fl_Table)(t.ptr()), 0)
 }
+
 func (t *table) CallbackRow() int {
 	return int(C.Fl_Table_callback_row((*C.Fl_Table)(t.ptr())))
 }
+
 func (t *table) CallbackContext() TableContext {
 	return TableContext(C.Fl_Table_callback_context((*C.Fl_Table)(t.ptr())))
 }
+
 func (t *table) Selection() (int, int, int, int) {
 	var top, left, bottom, right C.int
 	C.Fl_Table_get_selection((*C.Fl_Table)(t.ptr()), &top, &left, &bottom, &right)
 	return int(top), int(left), int(bottom), int(right)
 }
+
 func (t *table) VisibleCells() (int, int, int, int) {
 	var top, bottom, left, right C.int
 	C.Fl_Table_visible_cells((*C.Fl_Table)(t.ptr()), &top, &bottom, &left, &right)
 	return int(top), int(left), int(bottom), int(right)
 }
+
 func (t *table) SetTopRow(row int) {
 	C.Fl_Table_set_top_row((*C.Fl_Table)(t.ptr()), C.int(row))
 }
+
 func (t *table) ScrollbarSize() int {
 	return int(C.Fl_Table_scrollbar_size((*C.Fl_Table)(t.ptr())))
 }
+
 func (t *table) SetScrollbarSize(size int) {
 	C.Fl_Table_set_scrollbar_size((*C.Fl_Table)(t.ptr()), C.int(size))
 }
@@ -98,14 +119,17 @@ func newTableCallbackMap() *tableCallbackMap {
 		callbackMap: make(map[int]func(TableContext, int, int, int, int, int, int)),
 	}
 }
+
 func (m *tableCallbackMap) register(fn func(TableContext, int, int, int, int, int, int)) int {
 	m.id++
 	m.callbackMap[m.id] = fn
 	return m.id
 }
+
 func (m *tableCallbackMap) unregister(id int) {
 	delete(m.callbackMap, id)
 }
+
 func (m *tableCallbackMap) invoke(id int, context TableContext, r, c, x, y, w, h int) {
 	if id == 0 {
 		return
@@ -114,12 +138,15 @@ func (m *tableCallbackMap) invoke(id int, context TableContext, r, c, x, y, w, h
 		callback(context, r, c, x, y, w, h)
 	}
 }
+
 func (m *tableCallbackMap) isEmpty() bool {
 	return len(m.callbackMap) == 0
 }
+
 func (m *tableCallbackMap) size() int {
 	return len(m.callbackMap)
 }
+
 func (m *tableCallbackMap) clear() {
 	for id := range m.callbackMap {
 		delete(m.callbackMap, id)
@@ -143,12 +170,18 @@ var (
 
 func NewTableRow(x, y, w, h int, text ...string) *TableRow {
 	t := &TableRow{}
-	initGroup(t, unsafe.Pointer(C.Fl_Table_Row_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
-	// t.setDeletionHandler(t.onDelete)
+	ptr := C.Fl_Table_Row_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))
+	initWidget(t, unsafe.Pointer(ptr))
+	if t.deletionHandlerId > 0 {
+		panic("table already initialized")
+	}
+	t.deletionHandlerId = globalCallbackMap.register(t.onDelete)
+	C.Fl_Table_Row_set_deletion_callback((*C.Fl_Table_Row)(ptr), (*[0]byte)(C.go_deleter), unsafe.Pointer(t.deletionHandlerId))
 	return t
 }
 
 func (t *TableRow) onDelete() {
+	t.getWidget().onDelete()
 	if t.deletionHandlerId > 0 {
 		globalCallbackMap.unregister(t.deletionHandlerId)
 	}
@@ -158,6 +191,7 @@ func (t *TableRow) onDelete() {
 	}
 	t.drawCellCallbackId = 0
 }
+
 func (t *TableRow) Destroy() {
 	if t.drawCellCallbackId > 0 {
 		globalTableCallbackMap.unregister(t.drawCellCallbackId)
@@ -165,9 +199,11 @@ func (t *TableRow) Destroy() {
 	t.drawCellCallbackId = 0
 	t.table.Destroy()
 }
+
 func (t *TableRow) IsRowSelected(row int) bool {
 	return C.Fl_Table_Row_row_selected((*C.Fl_Table_Row)(t.ptr()), C.int(row)) != 0
 }
+
 func (t *TableRow) SetDrawCellCallback(callback func(TableContext, int, int, int, int, int, int)) {
 	if t.drawCellCallbackId > 0 {
 		globalTableCallbackMap.unregister(t.drawCellCallbackId)
@@ -187,9 +223,11 @@ var (
 func (t *TableRow) SelectAllRows(flag SelectionFlag) {
 	C.Fl_Table_Row_select_all_rows((*C.Fl_Table_Row)(t.ptr()), C.int(flag))
 }
+
 func (t *TableRow) SelectRow(row int, flag SelectionFlag) {
 	C.Fl_Table_Row_select_row((*C.Fl_Table_Row)(t.ptr()), C.int(row), C.int(flag))
 }
+
 func (t *TableRow) FindCell(ctx TableContext, row int, col int) (int, int, int, int, error) {
 	var x, y, w, h C.int
 	ret := C.Fl_Table_Row_find_cell((*C.Fl_Table_Row)(t.ptr()), C.int(ctx), C.int(row), C.int(col), &x, &y, &w, &h)

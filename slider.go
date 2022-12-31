@@ -45,6 +45,7 @@ func NewValueSlider(x, y, w, h int, text ...string) *ValueSlider {
 func (s *ValueSlider) SetTextFont(font Font) {
 	C.Fl_Value_Slider_set_text_font((*C.Fl_Value_Slider)(s.ptr()), C.int(font))
 }
+
 func (s *ValueSlider) SetTextSize(size int) {
 	C.Fl_Value_Slider_set_text_size((*C.Fl_Value_Slider)(s.ptr()), C.int(size))
 }

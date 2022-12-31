@@ -27,6 +27,7 @@ func (b *TextBuffer) ptr() *C.Fl_Text_Buffer {
 	}
 	return b.cPtr
 }
+
 func (b *TextBuffer) Destroy() {
 	C.Fl_Text_Buffer_delete(b.ptr())
 	b.cPtr = nil

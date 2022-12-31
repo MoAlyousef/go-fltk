@@ -4,6 +4,7 @@ package fltk
 #include <stdlib.h>
 #include "cfltk/cfl_menu.h"
 #include "cfltk/cfl_enums.h"
+#include "fltk.h"
 */
 import "C"
 import "unsafe"
@@ -14,22 +15,14 @@ type menu struct {
 	itemCallbacks     []uintptr
 }
 
-func (m *menu) init() {
-	if m.deletionHandlerId > 0 {
-		panic("menu already initialized")
-	}
-	// m.setDeletionHandler(m.onDelete)
-}
 func (m *menu) onDelete() {
-	if m.deletionHandlerId > 0 {
-		globalCallbackMap.unregister(m.deletionHandlerId)
-	}
-	m.deletionHandlerId = 0
+	m.getWidget().onDelete()
 	for _, itemCallbackId := range m.itemCallbacks {
 		globalCallbackMap.unregister(itemCallbackId)
 	}
 	m.itemCallbacks = m.itemCallbacks[:0]
 }
+
 func (m *menu) Destroy() {
 	for _, itemCallbackId := range m.itemCallbacks {
 		globalCallbackMap.unregister(itemCallbackId)
@@ -37,6 +30,7 @@ func (m *menu) Destroy() {
 	m.itemCallbacks = m.itemCallbacks[:0]
 	m.widget.Destroy()
 }
+
 func (m *menu) Add(label string, callback func()) int {
 	callbackId := globalCallbackMap.register(callback)
 	m.itemCallbacks = append(m.itemCallbacks, callbackId)
@@ -45,6 +39,7 @@ func (m *menu) Add(label string, callback func()) int {
 	// return int(C.Fl_Menu_Bar_add((*C.Fl_Menu_Bar)(m.ptr()), labelStr, 0, C.int(callbackId), 0))
 	return 0
 }
+
 func (m *menu) AddEx(label string, shortcut int, callback func(), flags int) int {
 	callbackId := globalCallbackMap.register(callback)
 	m.itemCallbacks = append(m.itemCallbacks, callbackId)
@@ -57,9 +52,11 @@ func (m *menu) AddEx(label string, shortcut int, callback func(), flags int) int
 func (m *menu) SetValue(value int) {
 	C.Fl_Menu_Bar_set_value((*C.Fl_Menu_Bar)(m.ptr()), C.int(value))
 }
+
 func (m *menu) Value() int {
 	return int(C.Fl_Menu_Bar_value((*C.Fl_Menu_Bar)(m.ptr())))
 }
+
 func (m *menu) Size() int {
 	return int(C.Fl_Menu_Bar_size((*C.Fl_Menu_Bar)(m.ptr())))
 }
@@ -70,8 +67,13 @@ type MenuButton struct {
 
 func NewMenuButton(x, y, w, h int, text ...string) *MenuButton {
 	m := &MenuButton{}
-	initWidget(m, unsafe.Pointer(C.Fl_Menu_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
-	m.menu.init()
+	ptr := unsafe.Pointer(C.Fl_Menu_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text)))
+	initWidget(m, ptr)
+	if m.deletionHandlerId > 0 {
+		panic("menu already initialized")
+	}
+	m.deletionHandlerId = globalCallbackMap.register(m.onDelete)
+	C.Fl_Menu_Button_set_deletion_callback((*C.Fl_Menu_Button)(ptr), (*[0]byte)(C.go_deleter), unsafe.Pointer(m.deletionHandlerId))
 	return m
 }
 
@@ -100,9 +102,11 @@ var (
 func (m *MenuButton) SetType(menuType MenuType) {
 	C.Fl_Menu_Button_set_type((*C.Fl_Menu_Button)(m.ptr()), C.int(menuType))
 }
+
 func (m *MenuButton) Popup() {
 	C.Fl_Menu_Button_popup((*C.Fl_Menu_Button)(m.ptr()))
 }
+
 func (m *MenuButton) Destroy() {
 	m.menu.Destroy()
 }
@@ -113,7 +117,12 @@ type MenuBar struct {
 
 func NewMenuBar(x, y, w, h int, text ...string) *MenuBar {
 	m := &MenuBar{}
-	initWidget(m, unsafe.Pointer(C.Fl_Menu_Bar_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
-	m.menu.init()
+	ptr := C.Fl_Menu_Bar_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))
+	initWidget(m, unsafe.Pointer(ptr))
+	if m.deletionHandlerId > 0 {
+		panic("menu already initialized")
+	}
+	m.deletionHandlerId = globalCallbackMap.register(m.onDelete)
+	C.Fl_Menu_Bar_set_deletion_callback((*C.Fl_Menu_Bar)(ptr), (*[0]byte)(C.go_deleter), unsafe.Pointer(m.deletionHandlerId))
 	return m
 }

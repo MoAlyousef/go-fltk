@@ -43,6 +43,7 @@ func (c *FileChooser) ptr() *C.Fl_File_Chooser {
 	}
 	return c.cPtr
 }
+
 func (c *FileChooser) Destroy() {
 	if c.pathname != nil {
 		C.free(unsafe.Pointer(c.pathname))
@@ -70,15 +71,19 @@ func (c *FileChooser) SetCallback(callback func()) {
 	c.callbackId = globalCallbackMap.register(callback)
 	// C.Fl_File_Chooser_set_callback(c.ptr(), C.uintptr_t(c.callbackId))
 }
+
 func (c *FileChooser) Show() {
 	C.Fl_File_Chooser_show((*C.Fl_File_Chooser)(c.ptr()))
 }
+
 func (c *FileChooser) Popup() {
 	C.Fl_File_Chooser_show((*C.Fl_File_Chooser)(c.ptr()))
 }
+
 func (c *FileChooser) Shown() bool {
 	return C.Fl_File_Chooser_shown(c.ptr()) != 0
 }
+
 func (c *FileChooser) SetPreview(enable bool) {
 	if enable {
 		C.Fl_File_Chooser_preview(c.ptr())
@@ -86,6 +91,7 @@ func (c *FileChooser) SetPreview(enable bool) {
 		// C.Fl_File_Chooser_preview(c.ptr(), 0)
 	}
 }
+
 func (c *FileChooser) Selection() []string {
 	count := int(C.Fl_File_Chooser_count(c.ptr()))
 	var selection []string

@@ -233,18 +233,22 @@ func (w *MainWindow) OnVerticalRotation() {
 	w.cube.vAng = float32(w.vrot.Value())
 	w.cube.Redraw()
 }
+
 func (w *MainWindow) OnHorizontalRotation() {
 	w.cube.hAng = float32(w.hrot.Value())
 	w.cube.Redraw()
 }
+
 func (w *MainWindow) OnVerticalPan() {
 	w.cube.yshift = float32(w.ypan.Value())
 	w.cube.Redraw()
 }
+
 func (w *MainWindow) OnHorizontalPan() {
 	w.cube.xshift = float32(w.xpan.Value())
 	w.cube.Redraw()
 }
+
 func (w *MainWindow) OnZoom() {
 	w.cube.size = float32(w.zoom.Value())
 	w.cube.Redraw()

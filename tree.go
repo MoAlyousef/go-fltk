@@ -14,7 +14,7 @@ type Tree struct {
 
 func NewTree(x, y, w, h int, text ...string) *Tree {
 	t := &Tree{}
-	initGroup(t, unsafe.Pointer(C.Fl_Tree_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initWidget(t, unsafe.Pointer(C.Fl_Tree_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return t
 }
 
@@ -36,6 +36,7 @@ func (t *Tree) Add(path string) TreeItem {
 	itemPtr := C.Fl_Tree_add((*C.Fl_Tree)(t.ptr()), pathStr)
 	return TreeItem{ptr: itemPtr}
 }
+
 func (t TreeItem) SetWidget(w Widget) {
 	C.Fl_Tree_Item_set_widget(t.ptr, w.getWidget().ptr())
 }

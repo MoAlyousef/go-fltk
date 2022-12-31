@@ -25,30 +25,39 @@ func EventButton() MouseButton {
 func EventButton1() bool {
 	return C.Fl_event_button() != 0
 }
+
 func EventX() int {
 	return int(C.Fl_event_x())
 }
+
 func EventY() int {
 	return int(C.Fl_event_y())
 }
+
 func EventXRoot() int {
 	return int(C.Fl_event_x_root())
 }
+
 func EventYRoot() int {
 	return int(C.Fl_event_y_root())
 }
+
 func EventDX() int {
 	return int(C.Fl_event_dx())
 }
+
 func EventDY() int {
 	return int(C.Fl_event_dy())
 }
+
 func EventKey() int {
 	return int(C.Fl_event_key())
 }
+
 func EventIsClick() bool {
 	return C.Fl_event_is_click() != 0
 }
+
 func EventText() string {
 	return C.GoString(C.Fl_event_text())
 }

@@ -12,7 +12,7 @@ type Pack struct {
 
 func NewPack(x, y, w, h int, text ...string) *Pack {
 	p := &Pack{}
-	initGroup(p, unsafe.Pointer(C.Fl_Pack_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initWidget(p, unsafe.Pointer(C.Fl_Pack_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return p
 }
 
@@ -26,6 +26,7 @@ var (
 func (p *Pack) SetType(packType PackType) {
 	p.widget.SetType(uint8(packType))
 }
+
 func (p *Pack) SetSpacing(spacing int) {
 	C.Fl_Pack_set_spacing((*C.Fl_Pack)(p.ptr()), C.int(spacing))
 }

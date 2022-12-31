@@ -24,9 +24,11 @@ var setBoxTypeCb = make([]func(x, y, w, h int, c Color), 57)
 func Run() int {
 	return int(C.Fl_run())
 }
+
 func Lock() bool {
 	return C.Fl_lock() == 0
 }
+
 func Unlock() {
 	C.Fl_unlock()
 }
@@ -140,6 +142,7 @@ func (m *awakeMap) register(fn func()) uintptr {
 	m.awakeMap[m.id] = fn
 	return m.id
 }
+
 func (m *awakeMap) fetchCallback(id uintptr) func() {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
@@ -147,6 +150,7 @@ func (m *awakeMap) fetchCallback(id uintptr) func() {
 	delete(m.awakeMap, id)
 	return fn
 }
+
 func (m *awakeMap) invoke(id uintptr) {
 	fn := m.fetchCallback(id)
 	fn()
@@ -161,6 +165,7 @@ func Awake(fn func()) bool {
 	awakeId := globalAwakeMap.register(fn)
 	return C.Fl_awake_callback((*[0]byte)(C.my_awake_handler), unsafe.Pointer(awakeId)) != 0
 }
+
 func AwakeNullMessage() {
 	C.Fl_awake()
 }
@@ -201,6 +206,7 @@ func (m *timeoutMap) register(fn func()) uintptr {
 	m.timeoutMap[m.id] = fn
 	return m.id
 }
+
 func (m *timeoutMap) fetchTimeout(id uintptr) func() {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
@@ -208,6 +214,7 @@ func (m *timeoutMap) fetchTimeout(id uintptr) func() {
 	delete(m.timeoutMap, id)
 	return fn
 }
+
 func (m *timeoutMap) invoke(id uintptr) {
 	fn := m.fetchTimeout(id)
 	fn()
@@ -244,33 +251,41 @@ func CopyToClipboard(text string) {
 	defer C.free(unsafe.Pointer(textStr))
 	C.Fl_copy(textStr, C.int(len(text)), 1 /* destination: clipboard */)
 }
+
 func CopyToSelectionBuffer(text string) {
 	textStr := C.CString(text)
 	defer C.free(unsafe.Pointer(textStr))
 	C.Fl_copy(textStr, C.int(len(text)), 0 /* destination: selection buffer */)
 }
+
 func DragAndDrop() {
 	C.Fl_dnd()
 }
+
 func ScreenWorkArea(screenNum int) (int, int, int, int) {
 	var x, y, w, h C.int
 	C.Fl_screen_work_area(&x, &y, &w, &h, C.int(screenNum))
 	return int(x), int(y), int(w), int(h)
 }
+
 func ScreenDPI(screenNum int) (float32, float32) {
 	var w, h C.float
 	C.Fl_screen_dpi(&w, &h, C.int(screenNum))
 	return float32(w), float32(h)
 }
+
 func ScreenCount() int {
 	return int(C.Fl_screen_count())
 }
+
 func ScreenScale(screenNum int) float32 {
 	return float32(C.Fl_screen_scale(C.int(screenNum)))
 }
+
 func SetScreenScale(screenNum int, scale float32) {
 	C.Fl_set_screen_scale(C.int(screenNum), C.float(scale))
 }
+
 func SetKeyboardScreenScaling(value bool) {
 	if value {
 		C.Fl_keyboard_screen_scaling(1)
@@ -278,9 +293,11 @@ func SetKeyboardScreenScaling(value bool) {
 		C.Fl_keyboard_screen_scaling(0)
 	}
 }
+
 func ScrollbarSize() int {
 	return int(C.Fl_scrollbar_size())
 }
+
 func SetScrollbarSize(size int) {
 	C.Fl_set_scrollbar_size(C.int(size))
 }

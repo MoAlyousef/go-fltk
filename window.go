@@ -18,9 +18,10 @@ func NewWindow(w, h int, text ...string) *Window {
 	win := &Window{}
 	ptr := C.Fl_Double_Window_new(C.int(0), C.int(0), C.int(w), C.int(h), cStringOpt(text))
 	C.Fl_Double_Window_free_position(ptr)
-	initGroup(win, unsafe.Pointer(ptr))
+	initWidget(win, unsafe.Pointer(ptr))
 	return win
 }
+
 func (w *Window) IsShown() bool {
 	return C.Fl_Double_Window_shown((*C.Fl_Double_Window)(w.ptr())) != 0
 }

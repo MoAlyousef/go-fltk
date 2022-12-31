@@ -12,7 +12,7 @@ type Tabs struct {
 
 func NewTabs(x, y, w, h int, text ...string) *Tabs {
 	i := &Tabs{}
-	initGroup(i, unsafe.Pointer(C.Fl_Tabs_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initWidget(i, unsafe.Pointer(C.Fl_Tabs_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return i
 }
 

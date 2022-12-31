@@ -22,6 +22,7 @@ type Image interface {
 var ErrImageDestroyed = errors.New("image is destroyed")
 
 func (i *image) getImage() *image { return i }
+
 func (i *image) ptr() *C.Fl_Image {
 	if i.iPtr == nil {
 		panic(ErrImageDestroyed)
@@ -45,12 +46,15 @@ func (i *image) Draw(x, y, w, h int) {
 func (i *image) W() int {
 	return int(C.Fl_Image_width(i.ptr()))
 }
+
 func (i *image) H() int {
 	return int(C.Fl_Image_height(i.ptr()))
 }
+
 func (i *image) Count() int {
 	return int(C.Fl_Image_count(i.ptr()))
 }
+
 func (i *image) Scale(width int, height int, proportional bool, can_expand bool) {
 	prop := 0
 	expand := 0
@@ -62,21 +66,27 @@ func (i *image) Scale(width int, height int, proportional bool, can_expand bool)
 	}
 	C.Fl_Image_scale(i.ptr(), C.int(width), C.int(height), C.int(prop), C.int(expand))
 }
+
 func (i *image) fail() int {
 	return int(C.Fl_Image_fail(i.ptr()))
 }
+
 func (i *image) DataW() int {
 	return int(C.Fl_Image_data_w(i.ptr()))
 }
+
 func (i *image) DataH() int {
 	return int(C.Fl_Image_data_h(i.ptr()))
 }
+
 func (i *image) D() int {
 	return int(C.Fl_Image_d(i.ptr()))
 }
+
 func (i *image) Ld() int {
 	return int(C.Fl_Image_ld(i.ptr()))
 }
+
 func (i *image) Inactive() {
 	C.Fl_Image_inactive(i.ptr())
 }

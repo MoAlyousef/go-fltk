@@ -255,25 +255,31 @@ func newCallbackMap() *callbackMap {
 		callbackMap: make(map[uintptr]func()),
 	}
 }
+
 func (m *callbackMap) register(fn func()) uintptr {
 	m.id++
 	m.callbackMap[m.id] = fn
 	return m.id
 }
+
 func (m *callbackMap) unregister(id uintptr) {
 	delete(m.callbackMap, id)
 }
+
 func (m *callbackMap) invoke(id uintptr) {
 	if callback, ok := m.callbackMap[id]; ok && callback != nil {
 		callback()
 	}
 }
+
 func (m *callbackMap) isEmpty() bool {
 	return len(m.callbackMap) == 0
 }
+
 func (m *callbackMap) size() int {
 	return len(m.callbackMap)
 }
+
 func (m *callbackMap) clear() {
 	for id := range m.callbackMap {
 		delete(m.callbackMap, id)
@@ -297,26 +303,32 @@ func newEventHandlerMap() *eventHandlerMap {
 		eventHandlerMap: make(map[uintptr]func(Event) bool),
 	}
 }
+
 func (m *eventHandlerMap) register(fn func(Event) bool) uintptr {
 	m.id++
 	m.eventHandlerMap[m.id] = fn
 	return m.id
 }
+
 func (m *eventHandlerMap) unregister(id uintptr) {
 	delete(m.eventHandlerMap, id)
 }
+
 func (m *eventHandlerMap) invoke(id uintptr, event Event) bool {
 	if handler, ok := m.eventHandlerMap[id]; ok && handler != nil {
 		return handler(event)
 	}
 	return false
 }
+
 func (m *eventHandlerMap) isEmpty() bool {
 	return len(m.eventHandlerMap) == 0
 }
+
 func (m *eventHandlerMap) size() int {
 	return len(m.eventHandlerMap)
 }
+
 func (m *eventHandlerMap) clear() {
 	for id := range m.eventHandlerMap {
 		delete(m.eventHandlerMap, id)

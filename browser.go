@@ -26,7 +26,7 @@ func NewBrowser(x, y, w, h int, text ...string) *Browser {
 	b := &Browser{}
 	b.dataMap = make(map[uintptr]interface{})
 	b.icons = make(map[int]Image)
-	initGroup(b, unsafe.Pointer(C.Fl_Browser_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	initWidget(b, unsafe.Pointer(C.Fl_Browser_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return b
 }
 
