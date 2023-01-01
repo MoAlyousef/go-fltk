@@ -2,6 +2,7 @@ package fltk
 
 /*
 #include "cfltk/cfl_window.h"
+#include "fltk.h"
 */
 import "C"
 import (
@@ -19,7 +20,13 @@ func NewGlWindow(x, y, w, h int, drawFun func(), text ...string) *GlWindow {
 	win.drawFunId = globalCallbackMap.register(drawFun)
 	initWidget(win, unsafe.Pointer(C.Fl_Gl_Window_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	win.SetDrawHandler(drawFun)
+	win.setDeletionCallback(win.onDelete)
 	return win
+}
+
+func (b *GlWindow) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Gl_Window_set_deletion_callback((*C.Fl_Gl_Window)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (w *GlWindow) MakeCurrent() {

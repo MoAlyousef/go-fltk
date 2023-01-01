@@ -172,12 +172,13 @@ func NewTableRow(x, y, w, h int, text ...string) *TableRow {
 	t := &TableRow{}
 	ptr := C.Fl_Table_Row_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))
 	initWidget(t, unsafe.Pointer(ptr))
-	if t.deletionHandlerId > 0 {
-		panic("table already initialized")
-	}
-	t.deletionHandlerId = globalCallbackMap.register(t.onDelete)
-	C.Fl_Table_Row_set_deletion_callback((*C.Fl_Table_Row)(ptr), (*[0]byte)(C.go_deleter), unsafe.Pointer(t.deletionHandlerId))
+	t.setDeletionCallback(t.onDelete)
 	return t
+}
+
+func (b *TableRow) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Table_Row_set_deletion_callback((*C.Fl_Table_Row)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (t *TableRow) onDelete() {

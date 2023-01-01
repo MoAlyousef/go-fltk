@@ -3,6 +3,7 @@ package fltk
 /*
 #include <stdlib.h>
 #include "cfltk/cfl_misc.h"
+#include "fltk.h"
 */
 import "C"
 import "unsafe"
@@ -15,6 +16,11 @@ func NewHelpView(x, y, w, h int, text ...string) *HelpView {
 	t := &HelpView{}
 	initWidget(t, unsafe.Pointer(C.Fl_Help_View_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
 	return t
+}
+
+func (b *HelpView) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Help_View_set_deletion_callback((*C.Fl_Help_View)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (h *HelpView) Directory() string {

@@ -3,6 +3,7 @@ package fltk
 /*
 #include "cfltk/cfl_group.h"
 #include "cfltk/cfl_enums.h"
+#include "fltk.h"
 */
 import "C"
 import "unsafe"
@@ -14,7 +15,13 @@ type Scroll struct {
 func NewScroll(x, y, w, h int, text ...string) *Scroll {
 	s := &Scroll{}
 	initWidget(s, unsafe.Pointer(C.Fl_Scroll_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	s.setDeletionCallback(s.onDelete)
 	return s
+}
+
+func (b *Scroll) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Scroll_set_deletion_callback((*C.Fl_Scroll)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (s *Scroll) ScrollTo(x, y int) {

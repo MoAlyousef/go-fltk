@@ -3,6 +3,7 @@ package fltk
 /*
 #include <stdlib.h>
 #include "cfltk/cfl_text.h"
+#include "fltk.h"
 */
 import "C"
 import (
@@ -56,7 +57,13 @@ type TextDisplay struct {
 func NewTextDisplay(x, y, w, h int, text ...string) *TextDisplay {
 	t := &TextDisplay{}
 	initWidget(t, unsafe.Pointer(C.Fl_Text_Display_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	t.setDeletionCallback(t.onDelete)
 	return t
+}
+
+func (b *TextDisplay) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Text_Display_set_deletion_callback((*C.Fl_Text_Display)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (t *TextDisplay) SetBuffer(buf *TextBuffer) {
@@ -120,5 +127,11 @@ type TextEditor struct {
 func NewTextEditor(x, y, w, h int, text ...string) *TextEditor {
 	t := &TextEditor{}
 	initWidget(t, unsafe.Pointer(C.Fl_Text_Editor_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	t.setDeletionCallback(t.onDelete)
 	return t
+}
+
+func (b *TextEditor) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Text_Editor_set_deletion_callback((*C.Fl_Text_Editor)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }

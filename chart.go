@@ -2,6 +2,7 @@ package fltk
 
 /*
 #include "cfltk/cfl_misc.h"
+#include "fltk.h"
 #include <stdlib.h>
 */
 import "C"
@@ -24,7 +25,13 @@ type Chart struct {
 func NewChart(x, y, w, h int, text ...string) *Chart {
 	c := &Chart{}
 	initWidget(c, unsafe.Pointer(C.Fl_Chart_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	c.setDeletionCallback(c.onDelete)
 	return c
+}
+
+func (b *Chart) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Chart_set_deletion_callback((*C.Fl_Chart)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (c *Chart) Clear() {

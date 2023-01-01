@@ -2,6 +2,7 @@ package fltk
 
 /*
 #include "cfltk/cfl_button.h"
+#include "fltk.h"
 */
 import "C"
 import "unsafe"
@@ -12,8 +13,15 @@ type Button struct {
 
 func NewButton(x, y, w, h int, text ...string) *Button {
 	b := &Button{}
-	initWidget(b, unsafe.Pointer(C.Fl_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	ptr := C.Fl_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))
+	initWidget(b, unsafe.Pointer(ptr))
+	b.setDeletionCallback(b.onDelete)
 	return b
+}
+
+func (b *Button) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Button_set_deletion_callback((*C.Fl_Button)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (b *Button) Value() bool {
@@ -39,7 +47,13 @@ type CheckButton struct {
 func NewCheckButton(x, y, w, h int, text ...string) *CheckButton {
 	i := &CheckButton{}
 	initWidget(i, unsafe.Pointer(C.Fl_Check_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	i.setDeletionCallback(i.onDelete)
 	return i
+}
+
+func (b *CheckButton) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Check_Button_set_deletion_callback((*C.Fl_Check_Button)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 type RadioButton struct {
@@ -49,7 +63,13 @@ type RadioButton struct {
 func NewRadioButton(x, y, w, h int, text ...string) *RadioButton {
 	i := &RadioButton{}
 	initWidget(i, unsafe.Pointer(C.Fl_Radio_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	i.setDeletionCallback(i.onDelete)
 	return i
+}
+
+func (b *RadioButton) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Radio_Button_set_deletion_callback((*C.Fl_Radio_Button)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 type RadioRoundButton struct {
@@ -59,6 +79,7 @@ type RadioRoundButton struct {
 func NewRadioRoundButton(x, y, w, h int, text ...string) *RadioRoundButton {
 	i := &RadioRoundButton{}
 	initWidget(i, unsafe.Pointer(C.Fl_Radio_Round_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	i.setDeletionCallback(i.onDelete)
 	return i
 }
 
@@ -69,7 +90,13 @@ type ReturnButton struct {
 func NewReturnButton(x, y, w, h int, text ...string) *ReturnButton {
 	i := &ReturnButton{}
 	initWidget(i, unsafe.Pointer(C.Fl_Return_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	i.setDeletionCallback(i.onDelete)
 	return i
+}
+
+func (b *ReturnButton) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Return_Button_set_deletion_callback((*C.Fl_Return_Button)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 type ToggleButton struct {
@@ -79,5 +106,11 @@ type ToggleButton struct {
 func NewToggleButton(x, y, w, h int, text ...string) *ToggleButton {
 	i := &ToggleButton{}
 	initWidget(i, unsafe.Pointer(C.Fl_Toggle_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	i.setDeletionCallback(i.onDelete)
 	return i
+}
+
+func (b *ToggleButton) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Toggle_Button_set_deletion_callback((*C.Fl_Toggle_Button)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }

@@ -34,6 +34,7 @@ func main() {
 			panic(err)
 		}
 		ch.Add(val, colors[rand.Intn(len(colors))], valueNameEditor.Value())
+		addValueButton.Destroy()
 	})
 
 	win.End()

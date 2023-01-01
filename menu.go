@@ -36,8 +36,7 @@ func (m *menu) Add(label string, callback func()) int {
 	m.itemCallbacks = append(m.itemCallbacks, callbackId)
 	labelStr := C.CString(label)
 	defer C.free(unsafe.Pointer(labelStr))
-	// return int(C.Fl_Menu_Bar_add((*C.Fl_Menu_Bar)(m.ptr()), labelStr, 0, C.int(callbackId), 0))
-	return 0
+	return int(C.Fl_Choice_add((*C.Fl_Choice)(m.ptr()), labelStr, C.int(0), (*C.Fl_Callback)(C.callback_handler),unsafe.Pointer(callbackId), C.int(0)))
 }
 
 func (m *menu) AddEx(label string, shortcut int, callback func(), flags int) int {
@@ -45,20 +44,19 @@ func (m *menu) AddEx(label string, shortcut int, callback func(), flags int) int
 	m.itemCallbacks = append(m.itemCallbacks, callbackId)
 	labelStr := C.CString(label)
 	defer C.free(unsafe.Pointer(labelStr))
-	// return int(C.Fl_Menu_Bar_add((*C.Fl_Menu_Bar)(m.ptr()), labelStr, C.int(shortcut), C.int(callbackId), C.int(flags)))
-	return 0
+	return int(C.Fl_Choice_add((*C.Fl_Choice)(m.ptr()), labelStr, C.int(shortcut), (*C.Fl_Callback)(C.callback_handler), unsafe.Pointer(callbackId), C.int(flags)))
 }
 
 func (m *menu) SetValue(value int) {
-	C.Fl_Menu_Bar_set_value((*C.Fl_Menu_Bar)(m.ptr()), C.int(value))
+	C.Fl_Choice_set_value((*C.Fl_Choice)(m.ptr()), C.int(value))
 }
 
 func (m *menu) Value() int {
-	return int(C.Fl_Menu_Bar_value((*C.Fl_Menu_Bar)(m.ptr())))
+	return int(C.Fl_Choice_value((*C.Fl_Choice)(m.ptr())))
 }
 
 func (m *menu) Size() int {
-	return int(C.Fl_Menu_Bar_size((*C.Fl_Menu_Bar)(m.ptr())))
+	return int(C.Fl_Choice_size((*C.Fl_Choice)(m.ptr())))
 }
 
 type MenuButton struct {
@@ -69,12 +67,13 @@ func NewMenuButton(x, y, w, h int, text ...string) *MenuButton {
 	m := &MenuButton{}
 	ptr := unsafe.Pointer(C.Fl_Menu_Button_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text)))
 	initWidget(m, ptr)
-	if m.deletionHandlerId > 0 {
-		panic("menu already initialized")
-	}
-	m.deletionHandlerId = globalCallbackMap.register(m.onDelete)
-	C.Fl_Menu_Button_set_deletion_callback((*C.Fl_Menu_Button)(ptr), (*[0]byte)(C.go_deleter), unsafe.Pointer(m.deletionHandlerId))
+	m.setDeletionCallback(m.onDelete)
 	return m
+}
+
+func (b *MenuButton) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Menu_Button_set_deletion_callback((*C.Fl_Menu_Button)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 type MenuType int
@@ -119,10 +118,11 @@ func NewMenuBar(x, y, w, h int, text ...string) *MenuBar {
 	m := &MenuBar{}
 	ptr := C.Fl_Menu_Bar_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))
 	initWidget(m, unsafe.Pointer(ptr))
-	if m.deletionHandlerId > 0 {
-		panic("menu already initialized")
-	}
-	m.deletionHandlerId = globalCallbackMap.register(m.onDelete)
-	C.Fl_Menu_Bar_set_deletion_callback((*C.Fl_Menu_Bar)(ptr), (*[0]byte)(C.go_deleter), unsafe.Pointer(m.deletionHandlerId))
+	m.setDeletionCallback(m.onDelete)
 	return m
+}
+
+func (b *MenuBar) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Menu_Bar_set_deletion_callback((*C.Fl_Menu_Bar)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }

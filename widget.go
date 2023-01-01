@@ -33,9 +33,8 @@ var ErrDestroyed = errors.New("widget is destroyed")
 func initWidget(w Widget, p unsafe.Pointer) {
 	ww := w.getWidget()
 	ww.tracker = C.Fl_Widget_Tracker_new((*C.Fl_Widget)(p))
-	ww.deletionHandlerId = globalCallbackMap.register(ww.onDelete)
-	C.Fl_Widget_set_deletion_callback((*C.Fl_Widget)(p), (*[0]byte)(C.go_deleter), unsafe.Pointer(ww.deletionHandlerId))
 }
+
 
 func (w *widget) ptr() *C.Fl_Widget {
 	if !w.exists() {
@@ -93,6 +92,7 @@ func (w *widget) SetDrawHandler(handler func()) {
 func (w *widget) getWidget() *widget {
 	return w
 }
+
 
 func (w *widget) onDelete() {
 	if w.deletionHandlerId > 0 {

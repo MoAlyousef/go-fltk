@@ -3,6 +3,7 @@ package fltk
 /*
 #include <stdlib.h>
 #include "cfltk/cfl_browser.h"
+#include "fltk.h"
 */
 import "C"
 import (
@@ -27,7 +28,13 @@ func NewBrowser(x, y, w, h int, text ...string) *Browser {
 	b.dataMap = make(map[uintptr]interface{})
 	b.icons = make(map[int]Image)
 	initWidget(b, unsafe.Pointer(C.Fl_Browser_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	b.setDeletionCallback(b.onDelete)
 	return b
+}
+
+func (w *Browser) setDeletionCallback(handler func()) {
+	w.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Browser_set_deletion_callback((*C.Fl_Browser)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
 }
 
 func (b *Browser) Add(str string) {
@@ -205,7 +212,13 @@ func NewSelectBrowser(x, y, w, h int, text ...string) *SelectBrowser {
 	b := &SelectBrowser{}
 	b.dataMap = make(map[uintptr]interface{})
 	initWidget(b, unsafe.Pointer(C.Fl_Select_Browser_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	b.setDeletionCallback(b.onDelete)
 	return b
+}
+
+func (w *SelectBrowser) setDeletionCallback(handler func()) {
+	w.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Select_Browser_set_deletion_callback((*C.Fl_Select_Browser)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
 }
 
 type HoldBrowser struct {
@@ -216,7 +229,13 @@ func NewHoldBrowser(x, y, w, h int, text ...string) *HoldBrowser {
 	b := &HoldBrowser{}
 	b.dataMap = make(map[uintptr]interface{})
 	initWidget(b, unsafe.Pointer(C.Fl_Hold_Browser_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	b.setDeletionCallback(b.onDelete)
 	return b
+}
+
+func (w *HoldBrowser) setDeletionCallback(handler func()) {
+	w.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Hold_Browser_set_deletion_callback((*C.Fl_Hold_Browser)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
 }
 
 type MultiBrowser struct {
@@ -227,5 +246,11 @@ func NewMultiBrowser(x, y, w, h int, text ...string) *MultiBrowser {
 	b := &MultiBrowser{}
 	b.dataMap = make(map[uintptr]interface{})
 	initWidget(b, unsafe.Pointer(C.Fl_Multi_Browser_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	b.setDeletionCallback(b.onDelete)
 	return b
+}
+
+func (w *MultiBrowser) setDeletionCallback(handler func()) {
+	w.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Multi_Browser_set_deletion_callback((*C.Fl_Multi_Browser)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
 }

@@ -5,6 +5,7 @@ package fltk
 #include "cfltk/cfl_window.h"
 #include "cfltk/cfl_image.h"
 #include "cfltk/cfl_enums.h"
+#include "fltk.h"
 */
 import "C"
 import "unsafe"
@@ -19,7 +20,13 @@ func NewWindow(w, h int, text ...string) *Window {
 	ptr := C.Fl_Double_Window_new(C.int(0), C.int(0), C.int(w), C.int(h), cStringOpt(text))
 	C.Fl_Double_Window_free_position(ptr)
 	initWidget(win, unsafe.Pointer(ptr))
+	win.setDeletionCallback(win.onDelete)
 	return win
+}
+
+func (w *Window) setDeletionCallback(handler func()) {
+	w.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Double_Window_set_deletion_callback((*C.Fl_Double_Window)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
 }
 
 func (w *Window) IsShown() bool {

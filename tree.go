@@ -4,6 +4,7 @@ package fltk
 #include <stdlib.h>
 #include "cfltk/cfl_tree.h"
 #include "cfltk/cfl_enums.h"
+#include "fltk.h"
 */
 import "C"
 import "unsafe"
@@ -15,7 +16,13 @@ type Tree struct {
 func NewTree(x, y, w, h int, text ...string) *Tree {
 	t := &Tree{}
 	initWidget(t, unsafe.Pointer(C.Fl_Tree_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	t.setDeletionCallback(t.onDelete)
 	return t
+}
+
+func (b *Tree) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Tree_set_deletion_callback((*C.Fl_Tree)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (t *Tree) SetShowRoot(show bool) {

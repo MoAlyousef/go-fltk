@@ -4,6 +4,7 @@ package fltk
 #include "cfltk/cfl_enums.h"
 #include "cfltk/cfl_input.h"
 #include "cfltk/cfl_misc.h"
+#include "fltk.h"
 */
 import "C"
 import "unsafe"
@@ -15,7 +16,13 @@ type Spinner struct {
 func NewSpinner(x, y, w, h int, text ...string) *Spinner {
 	s := &Spinner{}
 	initWidget(s, unsafe.Pointer(C.Fl_Spinner_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	s.setDeletionCallback(s.onDelete)
 	return s
+}
+
+func (b *Spinner) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Spinner_set_deletion_callback((*C.Fl_Spinner)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 type SpinnerInputType uint8

@@ -3,6 +3,7 @@ package fltk
 /*
 #include "cfltk/cfl_valuator.h"
 #include "cfltk/cfl_enums.h"
+#include "fltk.h"
 */
 import "C"
 import "unsafe"
@@ -25,7 +26,13 @@ var (
 func NewSlider(x, y, w, h int, text ...string) *Slider {
 	s := &Slider{}
 	initWidget(s, unsafe.Pointer(C.Fl_Slider_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	s.setDeletionCallback(s.onDelete)
 	return s
+}
+
+func (b *Slider) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Slider_set_deletion_callback((*C.Fl_Slider)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (s *Slider) SetType(sliderType SliderType) {
@@ -39,7 +46,13 @@ type ValueSlider struct {
 func NewValueSlider(x, y, w, h int, text ...string) *ValueSlider {
 	s := &ValueSlider{}
 	initWidget(s, unsafe.Pointer(C.Fl_Value_Slider_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	s.setDeletionCallback(s.onDelete)
 	return s
+}
+
+func (b *ValueSlider) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Value_Slider_set_deletion_callback((*C.Fl_Value_Slider)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (s *ValueSlider) SetTextFont(font Font) {

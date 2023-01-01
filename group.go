@@ -19,7 +19,13 @@ type Group struct {
 func NewGroup(x, y, w, h int, text ...string) *Group {
 	g := &Group{}
 	initWidget(g, unsafe.Pointer(C.Fl_Group_new(C.int(x), C.int(y), C.int(w), C.int(h), cStringOpt(text))))
+	g.setDeletionCallback(g.onDelete)
 	return g
+}
+
+func (b *Group) setDeletionCallback(handler func()) {
+	b.deletionHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Group_set_deletion_callback((*C.Fl_Group)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
 func (g *Group) getGroup() *Group {
