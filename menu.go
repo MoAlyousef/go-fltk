@@ -36,7 +36,7 @@ func (m *menu) Add(label string, callback func()) int {
 	m.itemCallbacks = append(m.itemCallbacks, callbackId)
 	labelStr := C.CString(label)
 	defer C.free(unsafe.Pointer(labelStr))
-	return int(C.Fl_Choice_add((*C.Fl_Choice)(m.ptr()), labelStr, C.int(0), (*C.Fl_Callback)(C.callback_handler),unsafe.Pointer(callbackId), C.int(0)))
+	return int(C.Fl_Choice_add((*C.Fl_Choice)(m.ptr()), labelStr, C.int(0), (*C.Fl_Callback)(C.callback_handler), unsafe.Pointer(callbackId), C.int(0)))
 }
 
 func (m *menu) AddEx(label string, shortcut int, callback func(), flags int) int {
@@ -74,6 +74,30 @@ func NewMenuButton(x, y, w, h int, text ...string) *MenuButton {
 func (b *MenuButton) setDeletionCallback(handler func()) {
 	b.deletionHandlerId = globalCallbackMap.register(handler)
 	C.Fl_Menu_Button_set_deletion_callback((*C.Fl_Menu_Button)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
+}
+
+func (w *MenuButton) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Menu_Button_handle((*C.Fl_Menu_Button)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *MenuButton) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Menu_Button_resize_callback((*C.Fl_Menu_Button)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *MenuButton) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Menu_Button_draw((*C.Fl_Menu_Button)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
 }
 
 type MenuType int
@@ -125,4 +149,28 @@ func NewMenuBar(x, y, w, h int, text ...string) *MenuBar {
 func (b *MenuBar) setDeletionCallback(handler func()) {
 	b.deletionHandlerId = globalCallbackMap.register(handler)
 	C.Fl_Menu_Bar_set_deletion_callback((*C.Fl_Menu_Bar)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
+}
+
+func (w *MenuBar) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Menu_Bar_handle((*C.Fl_Menu_Bar)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *MenuBar) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Menu_Bar_resize_callback((*C.Fl_Menu_Bar)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *MenuBar) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Menu_Bar_draw((*C.Fl_Menu_Bar)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
 }

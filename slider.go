@@ -35,6 +35,30 @@ func (b *Slider) setDeletionCallback(handler func()) {
 	C.Fl_Slider_set_deletion_callback((*C.Fl_Slider)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
+func (w *Slider) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Slider_handle((*C.Fl_Slider)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *Slider) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Slider_resize_callback((*C.Fl_Slider)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *Slider) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Slider_draw((*C.Fl_Slider)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
+}
+
 func (s *Slider) SetType(sliderType SliderType) {
 	s.widget.SetType(uint8(sliderType))
 }
@@ -53,6 +77,30 @@ func NewValueSlider(x, y, w, h int, text ...string) *ValueSlider {
 func (b *ValueSlider) setDeletionCallback(handler func()) {
 	b.deletionHandlerId = globalCallbackMap.register(handler)
 	C.Fl_Value_Slider_set_deletion_callback((*C.Fl_Value_Slider)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
+}
+
+func (w *ValueSlider) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Value_Slider_handle((*C.Fl_Value_Slider)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *ValueSlider) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Value_Slider_resize_callback((*C.Fl_Value_Slider)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *ValueSlider) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Value_Slider_draw((*C.Fl_Value_Slider)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
 }
 
 func (s *ValueSlider) SetTextFont(font Font) {

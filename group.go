@@ -28,6 +28,30 @@ func (b *Group) setDeletionCallback(handler func()) {
 	C.Fl_Group_set_deletion_callback((*C.Fl_Group)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
+func (w *Group) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Group_handle((*C.Fl_Group)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *Group) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Group_resize_callback((*C.Fl_Group)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *Group) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Group_draw((*C.Fl_Group)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
+}
+
 func (g *Group) getGroup() *Group {
 	return g
 }
@@ -60,11 +84,7 @@ func (g *Group) DrawChildren() {
 	C.Fl_Group_draw_children((*C.Fl_Group)(g.ptr()))
 }
 
-func (w *Group) SetDrawHandler(handler func()) {
-	if w.drawHandlerId > 0 {
-		globalCallbackMap.unregister(w.drawHandlerId)
-	}
-	w.drawHandlerId = globalCallbackMap.register(handler)
-	C.Fl_Group_draw((*C.Fl_Group)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
-
+func (g *Group) Destroy() {
+	g.Clear()
+	C.Fl_Group_delete((*C.Fl_Group)(g.ptr()))
 }

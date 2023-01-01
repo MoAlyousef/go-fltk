@@ -22,8 +22,9 @@ func testWidgetDestroyed(w *widget, t *testing.T) {
 
 func testGlobalMapsEmpty(t *testing.T) {
 	// actually in our tests we do not destroy the main windows, so the callback map should
-	// contain their deletion handlers.
-	if globalCallbackMap.size() != 1 {
+	// contain their deletion handlers. There are two deletion handlers per window - one as a widget,
+	// and one as a group.
+	if globalCallbackMap.size() != 2 {
 		t.Errorf("global callback map is not empty: %d", globalCallbackMap.size())
 	}
 	globalCallbackMap.clear()
@@ -45,196 +46,165 @@ func TestPanicWhenAccessingDeletedWidget(t *testing.T) {
 	defer func() {
 		if r := recover(); r == nil {
 			t.Errorf("Did not panic")
-		} else {
-			err := r.(error)
-			if err == nil {
-				t.Errorf("Panicked with not an error")
-			} else {
-				if !errors.Is(err, ErrDestroyed) {
-					t.Errorf("Unexpected error: %v", err)
-				}
-			}
+		} else if err, ok := r.(error); !ok {
+			t.Errorf("Panicked with not an error: %v", r)
+		} else if !errors.Is(err, ErrDestroyed) {
+			t.Errorf("Unexpected error: %v", err)
 		}
 		testWidgetDestroyed(&b.widget, t)
 		testGlobalMapsEmpty(t)
+		Unlock()
 	}()
-	b.SetCallback(func() {
-		go Awake(func() {
-			b.Destroy()
-			go Awake(func() {
-				b.SetLabel("bar")
-			})
-		})
+	b.SetEventHandler(func(event Event) bool {
+		if event != SHOW {
+			return false
+		}
+		b.Destroy()
+		Wait()
+		b.SetLabel("bar")
+		panic("Should have panicked")
 	})
 	Lock()
 	win.Show()
 	Run()
 }
 
-// func TestPanicWhenAccessingChildOfDeletedWidget(t *testing.T) {
-// 	win := NewWindow(400, 400)
-// 	g := NewGroup(1, 1, 398, 398)
-// 	g.SetResizeHandler(func() {})
-// 	b := NewButton(2, 2, 50, 50, "foo")
-// 	b.SetResizeHandler(func() {})
-// 	defer func() {
-// 		if r := recover(); r == nil {
-// 			t.Errorf("Did not panic")
-// 		} else {
-// 			err := r.(error)
-// 			if err == nil {
-// 				t.Errorf("Panicked with not an error")
-// 			} else {
-// 				if !errors.Is(err, ErrDestroyed) {
-// 					t.Errorf("Unexpected error: %v", err)
-// 				}
-// 			}
-// 		}
-// 		testWidgetDestroyed(&g.widget, t)
-// 		testWidgetDestroyed(&b.widget, t)
-// 		testGlobalMapsEmpty(t)
-// 	}()
-// 	b.SetEventHandler(func(event Event) bool {
-// 		if event != SHOW {
-// 			return false
-// 		}
-// 		go Awake(func() {
-// 			g.Destroy()
-// 			go Awake(func() {
-// 				b.SetLabel("bar")
-// 			})
-// 		})
-// 		return true
-// 	})
-// 	g.End()
-// 	win.End()
-// 	Lock()
-// 	win.Show()
-// 	Run()
-// }
+func TestPanicWhenAccessingChildOfDeletedWidget(t *testing.T) {
+	win := NewWindow(400, 400)
+	g := NewGroup(1, 1, 398, 398)
+	g.SetResizeHandler(func() {})
+	b := NewButton(2, 2, 50, 50, "foo")
+	b.SetResizeHandler(func() {})
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Did not panic")
+		} else if err, ok := r.(error); !ok {
+			t.Errorf("Panicked with not an error: %v", r)
+		} else if !errors.Is(err, ErrDestroyed) {
+			t.Errorf("Unexpected error: %v", err)
+		}
+		testWidgetDestroyed(&g.widget, t)
+		testWidgetDestroyed(&b.widget, t)
+		testGlobalMapsEmpty(t)
+		Unlock()
+	}()
+	b.SetEventHandler(func(event Event) bool {
+		if event != SHOW {
+			return false
+		}
+		g.Destroy()
+		Wait()
+		b.SetLabel("bar")
+		panic("Should have panicked")
+	})
+	g.End()
+	win.End()
+	Lock()
+	win.Show()
+	Run()
+}
 
-// func TestPanicWhenAccessingChildOfWidgetDeletedViaParent(t *testing.T) {
-// 	win := NewWindow(400, 400)
-// 	g := NewGroup(1, 1, 398, 398)
-// 	g.SetResizeHandler(func() {})
-// 	b := NewButton(2, 2, 50, 50, "foo")
-// 	b.SetResizeHandler(func() {})
-// 	var bParent *Group
-// 	defer func() {
-// 		if r := recover(); r == nil {
-// 			t.Errorf("Did not panic")
-// 		} else {
-// 			err := r.(error)
-// 			if err == nil {
-// 				t.Errorf("Panicked with not an error")
-// 			} else {
-// 				if !errors.Is(err, ErrDestroyed) {
-// 					t.Errorf("Unexpected error: %v", err)
-// 				}
-// 			}
-// 		}
-// 		testWidgetDestroyed(&g.widget, t)
-// 		testWidgetDestroyed(&b.widget, t)
-// 		testWidgetDestroyed(&bParent.widget, t)
-// 		testGlobalMapsEmpty(t)
-// 	}()
-// 	b.SetEventHandler(func(event Event) bool {
-// 		if event != SHOW {
-// 			return false
-// 		}
-// 		go Awake(func() {
-// 			bParent = b.Parent()
-// 			bParent.Destroy()
-// 			go Awake(func() {
-// 				b.SetLabel("bar")
-// 			})
-// 		})
-// 		return true
-// 	})
-// 	g.End()
-// 	win.End()
-// 	Lock()
-// 	win.Show()
-// 	Run()
-// }
+func TestPanicWhenAccessingChildOfWidgetDeletedViaParent(t *testing.T) {
+	win := NewWindow(400, 400)
+	g := NewGroup(1, 1, 398, 398)
+	g.SetResizeHandler(func() {})
+	b := NewButton(2, 2, 50, 50, "foo")
+	b.SetResizeHandler(func() {})
+	var bParent *Group
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Did not panic")
+		} else if err, ok := r.(error); !ok {
+			t.Errorf("Panicked with not an error: %v", r)
+		} else if !errors.Is(err, ErrDestroyed) {
+			t.Errorf("Unexpected error: %v", err)
+		}
+		testWidgetDestroyed(&g.widget, t)
+		testWidgetDestroyed(&b.widget, t)
+		testWidgetDestroyed(&bParent.widget, t)
+		testGlobalMapsEmpty(t)
+		Unlock()
+	}()
+	b.SetEventHandler(func(event Event) bool {
+		if event != SHOW {
+			return false
+		}
+		bParent = b.Parent()
+		bParent.Destroy()
+		Wait()
+		b.SetLabel("bar")
+		panic("Should have panicked")
+	})
+	g.End()
+	win.End()
+	Lock()
+	win.Show()
+	Run()
+}
 
-// // TableRow uses custom cleanup procedure
-// func TestDestroyingTableRow(t *testing.T) {
-// 	win := NewWindow(400, 400)
-// 	tb := NewTableRow(20, 20, 50, 50)
-// 	tb.SetResizeHandler(func() {})
-// 	tb.SetDrawCellCallback(nil)
-// 	defer func() {
-// 		if r := recover(); r == nil {
-// 			t.Errorf("Did not panic")
-// 		} else {
-// 			err := r.(error)
-// 			if err == nil {
-// 				t.Errorf("Panicked with not an error")
-// 			} else {
-// 				if !errors.Is(err, ErrDestroyed) {
-// 					t.Errorf("Unexpected error: %v", err)
-// 				}
-// 			}
-// 		}
-// 		testWidgetDestroyed(&tb.widget, t)
-// 		testGlobalMapsEmpty(t)
-// 	}()
-// 	tb.SetEventHandler(func(event Event) bool {
-// 		if event != SHOW {
-// 			return false
-// 		}
-// 		go Awake(func() {
-// 			tb.widget.Destroy()
-// 			go Awake(func() {
-// 				tb.IsRowSelected(0)
-// 			})
-// 		})
-// 		return true
-// 	})
-// 	win.End()
-// 	Lock()
-// 	win.Show()
-// 	Run()
-// }
+// TableRow uses custom cleanup procedure
+func TestDestroyingTableRow(t *testing.T) {
+	win := NewWindow(400, 400)
+	tb := NewTableRow(20, 20, 50, 50)
+	tb.SetResizeHandler(func() {})
+	tb.SetDrawCellCallback(nil)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Did not panic")
+		} else if err, ok := r.(error); !ok {
+			t.Errorf("Panicked with not an error: %v", r)
+		} else if !errors.Is(err, ErrDestroyed) {
+			t.Errorf("Unexpected error: %v", err)
+		}
+		testWidgetDestroyed(&tb.widget, t)
+		testGlobalMapsEmpty(t)
+		Unlock()
+	}()
+	tb.SetEventHandler(func(event Event) bool {
+		if event != SHOW {
+			return false
+		}
+		tb.Destroy()
+		Wait()
+		tb.IsRowSelected(0)
+		panic("Should have panicked")
+	})
+	win.End()
+	Lock()
+	win.Show()
+	Run()
+}
 
-// // MenuBar uses custom cleanup procedure and may have to clear many callbacks
-// func TestDestroyingMenu(t *testing.T) {
-// 	win := NewWindow(400, 400)
-// 	mb := NewMenuBar(20, 20, 50, 50)
-// 	mb.SetResizeHandler(func() {})
-// 	mb.Add("&File/&Load", func() {})
-// 	mb.AddEx("&File/&Save", CTRL+int('s'), func() {}, 0)
-// 	defer func() {
-// 		if r := recover(); r == nil {
-// 			t.Errorf("Did not panic")
-// 		} else {
-// 			err := r.(error)
-// 			if err == nil {
-// 				t.Errorf("Panicked with not an error")
-// 			} else {
-// 				if !errors.Is(err, ErrDestroyed) {
-// 					t.Errorf("Unexpected error: %v", err)
-// 				}
-// 			}
-// 		}
-// 		testWidgetDestroyed(&mb.widget, t)
-// 		testGlobalMapsEmpty(t)
-// 	}()
-// 	mb.SetEventHandler(func(event Event) bool {
-// 		if event != SHOW {
-// 			return false
-// 		}
-// 		go Awake(func() {
-// 			mb.widget.Destroy()
-// 			go Awake(func() {
-// 				mb.Redraw()
-// 			})
-// 		})
-// 		return true
-// 	})
-// 	win.End()
-// 	Lock()
-// 	win.Show()
-// 	Run()
-// }
+// MenuBar uses custom cleanup procedure and may have to clear many callbacks
+func TestDestroyingMenu(t *testing.T) {
+	win := NewWindow(400, 400)
+	mb := NewMenuBar(20, 20, 50, 50)
+	mb.SetResizeHandler(func() {})
+	mb.Add("&File/&Load", func() {})
+	mb.AddEx("&File/&Save", CTRL+int('s'), func() {}, 0)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Did not panic")
+		} else if err, ok := r.(error); !ok {
+			t.Errorf("Panicked with not an error: %v", r)
+		} else if !errors.Is(err, ErrDestroyed) {
+			t.Errorf("Unexpected error: %v", err)
+		}
+		testWidgetDestroyed(&mb.widget, t)
+		testGlobalMapsEmpty(t)
+		Unlock()
+	}()
+	mb.SetEventHandler(func(event Event) bool {
+		if event != SHOW {
+			return false
+		}
+		mb.Destroy()
+		Wait()
+		mb.Redraw()
+		panic("Should have panicked")
+	})
+	win.End()
+	Lock()
+	win.Show()
+	Run()
+}

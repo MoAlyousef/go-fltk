@@ -35,7 +35,6 @@ func initWidget(w Widget, p unsafe.Pointer) {
 	ww.tracker = C.Fl_Widget_Tracker_new((*C.Fl_Widget)(p))
 }
 
-
 func (w *widget) ptr() *C.Fl_Widget {
 	if !w.exists() {
 		panic(ErrDestroyed)
@@ -56,43 +55,15 @@ func (w *widget) SetCallback(f func()) {
 	}
 	w.callbackId = globalCallbackMap.register(f)
 	C.Fl_Widget_set_callback(w.ptr(), (*C.Fl_Callback)(C.callback_handler), unsafe.Pointer(w.callbackId))
-
 }
 
 func (w *widget) SetCallbackCondition(when CallbackCondition) {
 	C.Fl_Widget_set_when(w.ptr(), C.int(when))
 }
 
-func (w *widget) SetEventHandler(handler func(Event) bool) {
-	if w.eventHandlerId > 0 {
-		globalEventHandlerMap.unregister(w.eventHandlerId)
-	}
-	w.eventHandlerId = globalEventHandlerMap.register(handler)
-	C.Fl_Widget_handle(w.ptr(), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
-}
-
-func (w *widget) SetResizeHandler(handler func()) {
-	if w.resizeHandlerId > 0 {
-		globalCallbackMap.unregister(w.resizeHandlerId)
-	}
-	w.resizeHandlerId = globalCallbackMap.register(handler)
-	C.Fl_Widget_resize_callback(w.ptr(), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
-
-}
-
-func (w *widget) SetDrawHandler(handler func()) {
-	if w.drawHandlerId > 0 {
-		globalCallbackMap.unregister(w.drawHandlerId)
-	}
-	w.drawHandlerId = globalCallbackMap.register(handler)
-	C.Fl_Widget_draw(w.ptr(), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
-
-}
-
 func (w *widget) getWidget() *widget {
 	return w
 }
-
 
 func (w *widget) onDelete() {
 	if w.deletionHandlerId > 0 {
@@ -173,17 +144,14 @@ func (w *widget) MeasureLabel() (int, int) {
 	var width, height C.int
 	C.Fl_Widget_measure_label(w.ptr(), &width, &height)
 	return int(width), int(height)
-
 }
 
 func (w *widget) SetPosition(x, y int) {
 	C.Fl_Widget_resize(w.ptr(), C.int(w.X()), C.int(w.Y()), C.int(x), C.int(y))
-
 }
 
 func (w *widget) Resize(x, y, width, height int) {
 	C.Fl_Widget_resize(w.ptr(), C.int(x), C.int(y), C.int(width), C.int(height))
-
 }
 
 func (w *widget) Redraw() {
@@ -216,7 +184,6 @@ func (w *widget) SelectionColor() Color {
 
 func (w *widget) SetSelectionColor(color Color) {
 	C.Fl_Widget_set_selection_color(w.ptr(), C.uint(color))
-
 }
 
 func (w *widget) SetColor(color Color) {
@@ -227,19 +194,16 @@ func (w *widget) SetLabel(label string) {
 	labelStr := C.CString(label)
 	defer C.free(unsafe.Pointer(labelStr))
 	C.Fl_Widget_set_label(w.ptr(), labelStr)
-
 }
 
 func (w *widget) SetImage(i Image) {
 	C.Fl_Widget_set_image(w.ptr(), unsafe.Pointer(i.getImage().ptr()))
 	w.image = i
-
 }
 
 func (w *widget) SetDeimage(i Image) {
 	C.Fl_Widget_set_deimage(w.ptr(), unsafe.Pointer(i.getImage().ptr()))
 	w.deimage = i
-
 }
 
 func (w *widget) Box() BoxType {
@@ -282,7 +246,6 @@ func (w *widget) SetTooltip(text string) {
 	tooltipStr := C.CString(text)
 	defer C.free(unsafe.Pointer(tooltipStr))
 	C.Fl_Widget_set_tooltip(w.ptr(), tooltipStr)
-
 }
 
 func (w *widget) Parent() *Group {

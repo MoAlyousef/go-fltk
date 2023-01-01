@@ -25,6 +25,30 @@ func (b *Tree) setDeletionCallback(handler func()) {
 	C.Fl_Tree_set_deletion_callback((*C.Fl_Tree)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
+func (w *Tree) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Tree_handle((*C.Fl_Tree)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *Tree) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Tree_resize_callback((*C.Fl_Tree)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *Tree) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Tree_draw((*C.Fl_Tree)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
+}
+
 func (t *Tree) SetShowRoot(show bool) {
 	if show {
 		C.Fl_Tree_set_showroot((*C.Fl_Tree)(t.ptr()), 1)

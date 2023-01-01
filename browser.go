@@ -37,6 +37,30 @@ func (w *Browser) setDeletionCallback(handler func()) {
 	C.Fl_Browser_set_deletion_callback((*C.Fl_Browser)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
 }
 
+func (w *Browser) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Browser_handle((*C.Fl_Browser)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *Browser) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Browser_resize_callback((*C.Fl_Browser)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *Browser) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Browser_draw((*C.Fl_Browser)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
+}
+
 func (b *Browser) Add(str string) {
 	cStr := C.CString(str)
 	defer C.free(unsafe.Pointer(cStr))
@@ -57,9 +81,9 @@ func (b *Browser) AddWithData(str string, data interface{}) {
 	C.Fl_Browser_set_data((*C.Fl_Browser)(b.ptr()), C.int(sz), unsafe.Pointer(id))
 }
 
-// func (b *Browser) TopLine() int {
-// 	return int(C.Fl_Browser_topline((*C.Fl_Browser)(b.ptr())))
-// }
+func (b *Browser) TopLine() bool {
+	return C.Fl_Browser_is_topline((*C.Fl_Browser)(b.ptr())) != 0
+}
 
 func (b *Browser) SetBottomLine(line int) error {
 	if line < 1 || line > b.Size() {
@@ -221,6 +245,30 @@ func (w *SelectBrowser) setDeletionCallback(handler func()) {
 	C.Fl_Select_Browser_set_deletion_callback((*C.Fl_Select_Browser)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
 }
 
+func (w *SelectBrowser) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Select_Browser_handle((*C.Fl_Select_Browser)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *SelectBrowser) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Select_Browser_resize_callback((*C.Fl_Select_Browser)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *SelectBrowser) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Select_Browser_draw((*C.Fl_Select_Browser)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
+}
+
 type HoldBrowser struct {
 	Browser
 }
@@ -238,6 +286,30 @@ func (w *HoldBrowser) setDeletionCallback(handler func()) {
 	C.Fl_Hold_Browser_set_deletion_callback((*C.Fl_Hold_Browser)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
 }
 
+func (w *HoldBrowser) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Hold_Browser_handle((*C.Fl_Hold_Browser)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *HoldBrowser) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Hold_Browser_resize_callback((*C.Fl_Hold_Browser)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *HoldBrowser) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Hold_Browser_draw((*C.Fl_Hold_Browser)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
+}
+
 type MultiBrowser struct {
 	Browser
 }
@@ -253,4 +325,28 @@ func NewMultiBrowser(x, y, w, h int, text ...string) *MultiBrowser {
 func (w *MultiBrowser) setDeletionCallback(handler func()) {
 	w.deletionHandlerId = globalCallbackMap.register(handler)
 	C.Fl_Multi_Browser_set_deletion_callback((*C.Fl_Multi_Browser)(w.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(w.deletionHandlerId))
+}
+
+func (w *MultiBrowser) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Multi_Browser_handle((*C.Fl_Multi_Browser)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *MultiBrowser) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Multi_Browser_resize_callback((*C.Fl_Multi_Browser)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *MultiBrowser) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Multi_Browser_draw((*C.Fl_Multi_Browser)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
 }

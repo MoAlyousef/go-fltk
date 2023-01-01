@@ -103,7 +103,6 @@ func main() {
 	fltk.Lock()
 	win.Show()
 	fltk.Run()
-
 }
 
 func (c *CubeView) draw() {

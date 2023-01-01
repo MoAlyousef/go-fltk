@@ -66,6 +66,30 @@ func (b *TextDisplay) setDeletionCallback(handler func()) {
 	C.Fl_Text_Display_set_deletion_callback((*C.Fl_Text_Display)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
 }
 
+func (w *TextDisplay) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Text_Display_handle((*C.Fl_Text_Display)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *TextDisplay) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Text_Display_resize_callback((*C.Fl_Text_Display)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *TextDisplay) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Text_Display_draw((*C.Fl_Text_Display)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
+}
+
 func (t *TextDisplay) SetBuffer(buf *TextBuffer) {
 	C.Fl_Text_Display_set_buffer((*C.Fl_Text_Display)(t.ptr()), buf.ptr())
 }
@@ -134,4 +158,28 @@ func NewTextEditor(x, y, w, h int, text ...string) *TextEditor {
 func (b *TextEditor) setDeletionCallback(handler func()) {
 	b.deletionHandlerId = globalCallbackMap.register(handler)
 	C.Fl_Text_Editor_set_deletion_callback((*C.Fl_Text_Editor)(b.ptr()), (*[0]byte)(C.go_deleter), unsafe.Pointer(b.deletionHandlerId))
+}
+
+func (w *TextEditor) SetEventHandler(handler func(Event) bool) {
+	if w.eventHandlerId > 0 {
+		globalEventHandlerMap.unregister(w.eventHandlerId)
+	}
+	w.eventHandlerId = globalEventHandlerMap.register(handler)
+	C.Fl_Text_Editor_handle((*C.Fl_Text_Editor)(w.ptr()), (C.custom_handler_callback)(C.event_handler), unsafe.Pointer(w.eventHandlerId))
+}
+
+func (w *TextEditor) SetResizeHandler(handler func()) {
+	if w.resizeHandlerId > 0 {
+		globalCallbackMap.unregister(w.resizeHandlerId)
+	}
+	w.resizeHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Text_Editor_resize_callback((*C.Fl_Text_Editor)(w.ptr()), (*[0]byte)(C.resize_handler), unsafe.Pointer(w.resizeHandlerId))
+}
+
+func (w *TextEditor) SetDrawHandler(handler func()) {
+	if w.drawHandlerId > 0 {
+		globalCallbackMap.unregister(w.drawHandlerId)
+	}
+	w.drawHandlerId = globalCallbackMap.register(handler)
+	C.Fl_Text_Editor_draw((*C.Fl_Text_Editor)(w.ptr()), (C.custom_draw_callback)(C.callback_handler), unsafe.Pointer(w.drawHandlerId))
 }
