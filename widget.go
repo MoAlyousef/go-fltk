@@ -252,5 +252,10 @@ func (w *widget) Parent() *Group {
 	grp := &Group{}
 	ptr := C.Fl_Widget_parent(w.ptr())
 	initWidget(grp, ptr)
+	grp.setDeletionCallback(func() {
+		C.Fl_Widget_Tracker_delete(grp.tracker)
+		grp.tracker = nil
+		grp.onDelete()
+	})
 	return grp
 }
