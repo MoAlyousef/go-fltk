@@ -28,21 +28,16 @@ func main() {
 	valueEditor := fltk.NewInput(85, valueNameEditor.Y()+valueNameEditor.H()+20, 200, 20, "Value")
 
 	addValueButton := fltk.NewButton(222, valueEditor.Y()+valueEditor.H()+10, 70, 20, "Add value")
-	addValueButton.SetEventHandler(func(event fltk.Event) bool {
-		if event == fltk.PUSH {
-			val, err := strconv.ParseFloat(valueEditor.Value(), 64)
-			if err != nil {
-				panic(err)
-			}
+	addValueButton.SetCallback(func() {
+		val, err := strconv.ParseFloat(valueEditor.Value(), 64)
+		if err == nil {
 			ch.Add(val, colors[rand.Intn(len(colors))], valueNameEditor.Value())
 			addValueButton.Destroy()
-			return true
-		} else {
-			return false
 		}
 	})
 
 	win.End()
 	win.Show()
+
 	fltk.Run()
 }
