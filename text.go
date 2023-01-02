@@ -281,7 +281,7 @@ func (t *TextDisplay) InsertText(txt string) {
 func (t *TextDisplay) Overstrike(txt string) {
 	txtstr := C.CString(txt)
 	defer C.free(unsafe.Pointer(txtstr))
-	// C.Fl_Text_Display_overstrike((*C.Fl_Text_Display)(t.ptr()), txtstr)
+	C.Fl_Text_Display_overstrike((*C.Fl_Text_Display)(t.ptr()), txtstr)
 }
 
 type TextEditor struct {
